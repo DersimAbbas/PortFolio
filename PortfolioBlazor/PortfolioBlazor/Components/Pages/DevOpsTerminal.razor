@@ -1,0 +1,111 @@
+﻿
+@using PortfolioBlazor.Services
+@using Microsoft.AspNetCore.Components.Web
+@inject TerminalServices terminalService
+@inject NavigationManager navigator
+
+<div class="container-fluid p-0">
+
+    <!-- Terminal Output -->
+    <div class="terminal bg-dark text-success border-top w-100 m-0">
+        <!-- Display Path -->
+        <div class="path-display mb-2">
+            [📂] Current Path: @currentPath
+        </div>
+
+        <!-- Log Output -->
+        <div class="log-output mb-3">
+            @foreach(var log in terminalService.Logs)
+            {
+                <div>@log</div>
+            }
+        </div>
+
+        <!-- Command Input -->
+        <div class="input-group">
+            <span class="input-group-text bg-dark text-success border-0">$</span>
+            <input type="text" class="form-control bg-dark text-success border-0"
+                   @bind="command" @bind:event="oninput"
+                   @onkeypress="HandleKeyPress"
+                   placeholder="Enter command here..." autofocus />
+        </div>
+    </div>
+</div>
+@code {
+    private string command = "";
+    private string currentPath = "/";
+
+    protected override void OnInitialized()
+    {
+        // Add startup message if empty
+        if (!terminalService.Logs.Any())
+        {
+           terminalService.AddLog("[INFO] DevOps Terminal Initialized.");
+           terminalService.AddLog("[INFO] Type commands like: cd projects, ls skills, deploy portfolio.");
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        // Get path from current URL
+        var relativePath = navigator.ToBaseRelativePath(navigator.Uri);
+        currentPath = string.IsNullOrWhiteSpace(relativePath) ? "/home" : $"/{relativePath}";
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(command))
+        {
+            terminalService.AddLog($"$ {command}");
+
+            
+            switch (command.ToLower())
+            {
+                case "cd projects":
+                    terminalService.AddLog("[INFO] Navigating to /projects...");
+                    navigator.NavigateTo("/projects");
+                    currentPath = "/projects";
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    break;
+
+                case "cd home":
+                    terminalService.AddLog("[INFO] Navigating to /home...");
+                    navigator.NavigateTo("/");
+                    currentPath = "/home";
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    break;
+
+                case "ls skills":
+                    terminalService.AddLog("[INFO] Showing /skills...");
+                    navigator.NavigateTo("/skills");
+                    currentPath = "/skills";
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    break;
+
+                case "deploy portfolio":
+                    navigator.NavigateTo("/portfolio");
+                    currentPath = "/portfolio";
+                    terminalService.AddLog("[INFO] Deploying Portfolio...");
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    break;
+
+                case "cls":
+                    terminalService.Logs.Clear();
+                    terminalService.AddLog("[INFO] Terminal cleared.");
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    break;
+
+                default:
+                    terminalService.AddLog($"[ERROR] Unknown command: '{command}'");
+                    break;
+
+            }
+
+            command = string.Empty;
+        }
+    }
+}

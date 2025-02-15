@@ -1,0 +1,32 @@
+﻿@using PortfolioBlazor.Components.Pages
+@using PortfolioBlazor.Services
+@inject TerminalServices terminal
+@inject NavigationManager navigator
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="PortfolioBlazor.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="bootstrap/custom.css" />
+    <HeadOutlet @rendermode="InteractiveServer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body>
+    <div class="app-root">
+        <Routes @rendermode="InteractiveServer" />
+        <img src="/bootstrap/Devopsbackground.png" class="infinity-image" />
+        <script src="_framework/blazor.web.js"></script>
+        
+    </div>
+    
+</body>
+
+</html>

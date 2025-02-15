@@ -1,0 +1,101 @@
+﻿
+.app-root {
+    height: 100vh;
+    background-color: #0f0f0f;
+    color: #fff;
+}
+
+.infinity-image {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: auto;
+    height: auto;
+    opacity: 0.2;
+    animation: rotateLoop 30s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotateLoop {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+
+.hidden-navbar {
+    display: none!important;
+}
+.terminal {
+    left: 0;
+    margin: 0;
+    padding: 0px;
+    bottom: 0;
+    width: 100% !important;
+    position: fixed !important;
+    height: fit-content;
+    font-family: 'Fira Code', monospace;
+    border:none!important;
+    resize: vertical;
+    overflow: auto;
+    z-index: 1000;
+    background-color: #1e1e1e;
+}
+
+/* Terminal Header (like VSCode) */
+.terminal-header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+/* Path Display */
+.path-display {
+    font-weight: bold;
+    color: #00ffaa;
+    margin-bottom: 5px;
+}
+
+/* Log Output */
+.log-output {
+    height: 150px;
+    overflow-y: auto;
+    background-color: #121212;
+    padding: 0.5rem;
+    border-radius: 5px;
+    color: #00ffaa;
+    font-size: 0.85rem;
+    border: 1px solid #333;
+}
+
+/* Input Field Customization */
+.input-group-text {
+    font-weight: bold;
+}
+
+.form-control::placeholder {
+    color: #5cff5c;
+    opacity: 0.6;
+}
+
+.command-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-size: 1.2rem;
+}
+
+    .command-input:focus {
+        outline: none;
+    }
+
+
+.animate__animated.animate__fadeInLeft {
+    animation-delay: 2s;
+    animation-duration: 1s;
+}
