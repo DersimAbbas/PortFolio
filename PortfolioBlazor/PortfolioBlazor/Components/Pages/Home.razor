@@ -1,24 +1,46 @@
 ﻿@page "/"
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
-<h1>HOME</h1>
+@inject IJSRuntime jsruntime
+@inject NavigationManager navigator
 
-<div class="container-fluid p-0 bg-gradient text-white" >
-    <div class="row h-100 align-items-center justify-content-center text-center">
+<!-- Particles Background -->
+
+<!-- Main Content -->
+<div class="container-fluid pt-5 text-white position-relative d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+    <div id="particles-js"></div>
+    <div class="row align-items-center justify-content-center text-center w-100">
         <div class="d-flex flex-column mb-3 align-items-center">
             <img src="/bootstrap/Dersim2.jpg" class="p-2 rounded-circle animate__animated animate__fadeInLeft" alt="Dersim Abbas Profile" style="max-width:200px;" />
             <h1 class="display-4 fw-bold mb-3">Hi, I’m Dersim Abbas — a DevOps Engineer</h1>
-            <p class="lead mb-4">Building Scalable Infrastructure and Automating Deployments.</p>
+
+            <!-- Typewriter Tagline -->
+            <p class="lead mb-4 typewriter-text">Empowering Continuous Delivery, Automation, and Cloud Scalability with Modern DevOps Practices.</p>
+
             <p class="mb-4">From CI/CD pipelines to Infrastructure as Code, I help bridge the gap between Development and Operations.</p>
+            <p>Use the terminal at the bottom for interacting and fun experience! Alternatives: buttons.</p>
             <div>
                 <button class="btn btn-success btn-lg me-3">View Projects</button>
-                <button class="btn btn-outline-success btn-lg">Explore Skills</button>
+                <button class="btn btn-outline-success btn-lg" @onclick="SkillsBtn">Explore Skills</button>
             </div>
         </div>
     </div>
     <DevOpsTerminal />
 </div>
 
+
 @code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsruntime.InvokeVoidAsync("loadParticles");
+        }
+    }
+    private void SkillsBtn()
+    {
+        navigator.NavigateTo("/skills");
+    }
 
 }

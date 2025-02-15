@@ -1,11 +1,75 @@
 ﻿@page "/skills"
+@inject TerminalServices terminalService
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
 
-<h2 class="text-center mt-5">🛠️ Skills</h2>
-<p>This is the skills section.</p>
+<div class="pipeline-container-horizontal d-flex flex-column align-items-center py-5">
+    <h2 class="text-center mb-5 text-success">My DevOps Journey Pipeline</h2>
+    <div class="pipeline-line-horizontal"></div>
+    <div class="pipeline-stages d-flex flex-wrap justify-content-center align-items-center">
+        @foreach (var stage in Stages)
+        {
+            <div class="stage-card mx-3 text-center @(stage.IsActive ? "active-stage" : "")">
+                <h5>@stage.Title</h5>
+                <p>@stage.Description</p>
+            </div>
+            @if (stage != Stages.Last())
+            {
+                <div class="stage-connector"></div>
+            }
+        }
+    </div>
+
+    <div class="progress mt-4 w-75">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: @Progress%" aria-valuenow="@Progress" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <button class="btn btn-success mt-4" @onclick="StartPipeline">Start Pipeline</button>
+</div>
+
 <DevOpsTerminal/>
-
 @code {
+    private List<PipelineStage> Stages = new List<PipelineStage>
+    {
+        new PipelineStage("🚀 Getting Started", "Explored Git, CI/CD, and cloud basics."),
+        new PipelineStage("🛠️ IaC", "Deployed infrastructure with Terraform."),
+        new PipelineStage("🐳 Containers", "Dockerized apps for dev and testing."),
+        new PipelineStage("🔁 CI/CD", "Automated pipelines with GitHub Actions."),
+        new PipelineStage("☁️ Cloud", "Deployed web apps on Azure."),
+        new PipelineStage("🎯 Portfolio", "Built this portfolio with Blazor.")
+    };
 
+    private double Progress = 0;
+
+    private async Task StartPipeline()
+    {
+        terminalService.AddLog("[INFO] Starting DevOps pipeline...");
+
+        for (int i = 0; i < Stages.Count; i++)
+        {
+            Stages[i].IsActive = true;
+            Progress = ((i + 1) / (double)Stages.Count) * 100;
+            terminalService.AddLog($"[INFO] Running job: {Stages[i].Title}...");
+            StateHasChanged();
+            await Task.Delay(1500); // Simulate job execution
+            terminalService.AddLog($"[INFO] Completed: {Stages[i].Title}.");
+        }
+
+        terminalService.AddLog("[INFO] Build successful! All stages completed.");
+        StateHasChanged();
+    }
+
+    private class PipelineStage
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
+
+        public PipelineStage(string title, string description)
+        {
+            Title = title;
+            Description = description;
+            IsActive = false;
+        }
+    }
 }

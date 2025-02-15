@@ -13,7 +13,7 @@
     width: auto;
     height: auto;
     opacity: 0.2;
-    animation: rotateLoop 30s linear infinite;
+    animation: rotateLoop 40s linear infinite;
     z-index: 0;
 }
 
@@ -38,12 +38,12 @@
     bottom: 0;
     width: 100% !important;
     position: fixed !important;
-    height: fit-content;
+    max-height: 100vh;
     font-family: 'Fira Code', monospace;
     border:none!important;
     resize: vertical;
     overflow: auto;
-    z-index: 1000;
+    z-index: 2;
     background-color: #1e1e1e;
 }
 
@@ -98,4 +98,142 @@
 .animate__animated.animate__fadeInLeft {
     animation-delay: 2s;
     animation-duration: 1s;
+}
+
+/* Particles Background */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+canvas {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent page-level scroll */
+    line-height:1.6;
+}
+
+.container-fluid {
+    min-height: 100vh; /* Ensures full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically centers content */
+    align-items: center; /* Horizontally centers content */
+    overflow: auto; /* Remove unnecessary scrollbars */
+    padding: 0;
+    margin: 0;
+    z-index:1;
+}
+.typewriter-text {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #00ff7f;
+    animation: typing-text 3s steps(80, end) forwards, blink-caret 0.75s step-end 4;
+    font-size: 1.25rem;
+    color: #00ff7f;
+    animation-fill-mode: forwards;
+}
+
+.typewriter-greeting {
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    border-right: 2px solid #00ff7f;
+    animation: typing-greeting 2s steps(38, end) forwards, blink-caret 0.75s step-end 2;
+    font-size: 1rem;
+    color: #00ff7f;
+    animation-fill-mode: forwards;
+}
+@keyframes typing-text {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 80ch
+    }
+}
+
+@keyframes typing-greeting {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 38ch
+    }
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: #00ff7f;
+    }
+}
+
+.typewriter-text::after {
+    content: "";
+    animation: none;
+    
+}
+
+/* Hide caret after animation completes */
+.typewriter-greeting::after {
+    content: "";
+    display: none;
+}
+.pipeline-container-horizontal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+
+
+
+.stage-card {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 255, 127, 0.5);
+    max-width: 250px;
+    color: #fff;
+    margin: 10px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease-in, transform 1s ease-in;
+}
+
+    .stage-card.active-stage {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+.stage-connector {
+    width: 60px;
+    height: 4px;
+    background-color: #00ff7f;
+    margin: 0 10px;
+}
+
+.progress-bar {
+    height: 25px;
+    font-size: 14px;
 }

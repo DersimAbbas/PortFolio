@@ -3,6 +3,8 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject TerminalServices terminalService
 @inject NavigationManager navigator
+@using System.Threading;
+@using System.Threading.Tasks;
 
 <div class="container-fluid p-0">
 
@@ -12,13 +14,18 @@
         <div class="path-display mb-2">
             [📂] Current Path: @currentPath
         </div>
-
+        <div class="text-success text-center mb-2">
+          
+            <span>@currentPrompt</span>
+        </div>
         <!-- Log Output -->
         <div class="log-output mb-3">
             @foreach(var log in terminalService.Logs)
             {
                 <div>@log</div>
+               
             }
+           
         </div>
 
         <!-- Command Input -->
@@ -34,14 +41,38 @@
 @code {
     private string command = "";
     private string currentPath = "/";
-
-    protected override void OnInitialized()
+    private string infoMessage1 = "[INFO] DevOps Terminal Initialized.";
+    private string infoMessage2 = "[INFO] Type commands like: cd projects, ls skills, deploy portfolio.";
+    private string currentPrompt = "";
+    private string[] prompts = new[]
     {
-        // Add startup message if empty
+        "~$ Type 'ls info' to get in touch!",
+        "~$ Type 'cd projects' to see my work!",
+        "~$ Type 'ls skills' to explore my skills!"
+    };
+    private int promptIndex = 0;
+    private Timer? timer;
+    private List<string> commandList = new List<string>
+    {
+        new string("'ls help'"),
+        new string("'cd home'"),
+        new string("'cd projects'"),
+        new string("'cls - clearing terminal'"),
+        new string("'ls skills'"),
+        new string("'ls info'")
+    };
+    protected  override async Task OnInitializedAsync()
+    {
+
+        currentPrompt = prompts[0];
+        timer = new Timer(ChangePrompt, null, 0, 5000); // Change every 5 seconds
+                                                        // Add startup message if empty
         if (!terminalService.Logs.Any())
         {
-           terminalService.AddLog("[INFO] DevOps Terminal Initialized.");
-           terminalService.AddLog("[INFO] Type commands like: cd projects, ls skills, deploy portfolio.");
+            terminalService.AddLog(infoMessage1);
+            await Task.Delay(500);
+            terminalService.AddLog(infoMessage2);
+
         }
     }
     protected override void OnParametersSet()
@@ -56,25 +87,21 @@
         if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(command))
         {
             terminalService.AddLog($"$ {command}");
-
-            
             switch (command.ToLower())
             {
                 case "cd projects":
                     terminalService.AddLog("[INFO] Navigating to /projects...");
                     navigator.NavigateTo("/projects");
                     currentPath = "/projects";
-                    await Task.Delay(100);
-                    StateHasChanged();
                     break;
+
 
                 case "cd home":
                     terminalService.AddLog("[INFO] Navigating to /home...");
                     navigator.NavigateTo("/");
                     currentPath = "/home";
-                    await Task.Delay(100);
-                    StateHasChanged();
                     break;
+
 
                 case "ls skills":
                     terminalService.AddLog("[INFO] Showing /skills...");
@@ -84,28 +111,60 @@
                     StateHasChanged();
                     break;
 
+
                 case "deploy portfolio":
                     navigator.NavigateTo("/portfolio");
                     currentPath = "/portfolio";
                     terminalService.AddLog("[INFO] Deploying Portfolio...");
-                    await Task.Delay(100);
-                    StateHasChanged();
                     break;
+
 
                 case "cls":
                     terminalService.Logs.Clear();
                     terminalService.AddLog("[INFO] Terminal cleared.");
-                    await Task.Delay(100);
-                    StateHasChanged();
+                    break;
+
+                case "ls info":
+                    if (!terminalService.Logs.Any(log => log.ToString().Contains("LinkedIn:"))) // Check if links are already in the log
+                    {
+                        terminalService.AddLog("[INFO] Displaying contact info...");
+                        terminalService.AddLog("[INFO] LinkedIn: <a href='https://linkedin.com/in/dersimabbas'target='_blank'>linkedin.com/in/dersimabbas</a>");
+                        terminalService.AddLog("[INFO] GitHub: <a href='https://github.com/dersimabbas' target='_blank'>github.com/dersimabbas</a>");
+                    }
+                    break;
+
+                case "ls help":
+                    terminalService.AddLog($"[INFO] availbale commands:");
+                    foreach(var command in commandList)
+                    {
+                        terminalService.AddLog($"$ {command}");
+                    }
                     break;
 
                 default:
-                    terminalService.AddLog($"[ERROR] Unknown command: '{command}'");
+                    terminalService.AddLog($"[ERROR] Unknown command: '{command}', type ls help for all available commands.");
                     break;
 
-            }
 
+            }
+            await Task.Delay(100);
+            StateHasChanged();
             command = string.Empty;
         }
     }
+    private void ChangePrompt(object? state)
+    {
+        promptIndex = (promptIndex + 1) % prompts.Length;
+        currentPrompt = prompts[promptIndex];
+        InvokeAsync(StateHasChanged); // Refresh UI
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+
+           
+           
 }
