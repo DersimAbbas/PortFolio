@@ -36,7 +36,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content text-white p-3">
                     <div class="modal-header">
-                        <h5 class="modal-title">@selectedSkill.Tech - Progress Over Time</h5>
+                        <h5 class="modal-title bg-success">@selectedSkill.Tech - Progress Over Time</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
                     </div>
                     <div class="modal-body">
@@ -45,6 +45,14 @@
                 </div>
             </div>
         </div>
+    }
+    <div class="text-center mt-4">
+        <Button Color="ButtonColor.Primary" @onclick="ToggleIaCView">Show Skills as IaC</Button>
+    </div>
+    
+    @if (showIaC)
+    {
+        <SkillsIac Skills="skills"/>
     }
 </div>
 
@@ -57,84 +65,76 @@
     private LineChart lineChart = default!;
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
-    private int datasetsCount;
-    private int labelsCount;
-    private Random random = new();
-
+    private bool showIaC = false;
     protected override async Task OnInitializedAsync()
     {
         skills = await server.FetchTechsAsync();
-        var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
-        var labels = skills.Select(s => s.Tech).ToList();
-        var datasets = new List<IChartDataset>();
 
-        var skillLabel = selectedSkill?.Tech ?? "Skill Progress";
-        var skillValue = new List<double?>();
-
-        foreach( var skilLvl in skills)
-        {
-            skillValue.Add(skilLvl.SkillLevel);
-            Console.WriteLine(skilLvl.SkillLevel);
-        }
-
-        var skilldata = new LineChartDataset
-            {
-                Label = skillLabel,
-                Data = skillValue,
-                BackgroundColor = c.ToRgbString(),
-                BorderColor = c.ToRgbString(),
-                PointRadius = new List<double> { 5 },
-                PointHoverRadius = new List<double> { 8 }
-            };
-        datasets.Add(skilldata);
-
-        chartData = new ChartData
-            {
-                Labels = labels,
-                Datasets = datasets
-            };
-
-        lineChartOptions = new LineChartOptions
-            {
-                Responsive = true,
-                Interaction = new Interaction { Mode = InteractionMode.Index },
-                Scales = new()
-                {
-                    X = new()
-                    {
-                        Title = new() { Text = "Tech Experience", Display = true }
-                    },
-                    Y = new()
-                    {
-                        Title = new() { Text = "Skill Level", Display = true }
-                    }
-                },
-                Plugins = new()
-                {
-                    Title = new() { Text = "Tech Skills Progress", Display = true }
-                }
-            };
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void ToggleIaCView()
     {
-        if (firstRender && chartData != null && lineChartOptions != null)
-        {
-            await lineChart.InitializeAsync(chartData, lineChartOptions);
-        }
-        await base.OnAfterRenderAsync(firstRender);
+        showIaC = !showIaC;
     }
+
 
     private async Task ShowSkillModal(TechsModel skill)
     {
+        var allMonths = new List<string> { "1 Month", "2 Months", 
+        "3 Months", "4 Months", 
+        "5 Months", "6 Months", 
+        "7 Months", "8 Months", 
+        "9 Months", "10 Months", 
+        "11 Months", "12 Months" };
+
         selectedSkill = skill;
+        var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
+
+        var labels = new List<string>();  // Use selected skill experience
+        var skillValue = new List<double?>();  // Use selected skill level
+        int experienceMonths = int.Parse(new string(selectedSkill.TechExperience.Where(char.IsDigit).ToArray()));
+
+        for (int i = 1; i <= experienceMonths; i++)
+        {
+            labels.Add($"{i} Month{(i > 1 ? "s" : "")}");
+            skillValue.Add(selectedSkill.SkillLevel);  // Repeat skill level for each month up to experience
+        }
+        var skilldata = new LineChartDataset
+        {
+            Label = selectedSkill.Tech,  // Use selected skill name
+            Data = skillValue,
+            BackgroundColor = c.ToRgbString(),
+            BorderColor = c.ToRgbString(),
+            PointRadius = new List<double> { 5 },
+            PointHoverRadius = new List<double> { 8 }
+        };
+
+        chartData = new ChartData
+        {
+            Labels = labels,
+            Datasets = new List<IChartDataset> { skilldata }
+        };
+
+        lineChartOptions = new LineChartOptions
+        {
+            Responsive = true,
+            Interaction = new Interaction { Mode = InteractionMode.Index },
+            Scales = new()
+            {
+                X = new() { Title = new() { Text = "Experience Time", Display = true } },
+                Y = new() { Title = new() { Text = "Skill Level", Display = true } }
+            },  
+            Plugins = new() { Title = new() { Text = $"{selectedSkill.Tech} Skill Progress", Display = true } }
+        };
+            
         await InvokeAsync(StateHasChanged); // Ensure the modal is rendered first
         await Task.Delay(100); // Small delay to allow DOM to render
+
         if (lineChart != null)
         {
             await lineChart.InitializeAsync(chartData, lineChartOptions);
         }
     }
+
     private void CloseModal()
     {
         selectedSkill = null;

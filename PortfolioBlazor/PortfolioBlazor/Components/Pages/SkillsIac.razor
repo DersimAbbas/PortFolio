@@ -1,0 +1,32 @@
+﻿@using PortfolioBlazor.Models
+@code {
+    [Parameter] public List<TechsModel> Skills { get; set; } = new();
+}
+
+<div class="mt-3 p-3 bg-dark text-success rounded">
+    <pre>
+        <code>
+            provider "skills" {
+              name = "My Tech Skills Portfolio"
+            }
+
+            @foreach (var skill in Skills)
+            {
+                @:resource "tech_skill" "@(skill.Tech.ToLower())" {
+                @:  name        = "@skill.Tech"
+                @:  experience  = "@skill.TechExperience"
+                @:  skill_level = @(skill.SkillLevel)
+                @:}
+            }
+        </code>
+    </pre>
+</div>
+@code {
+    private bool showIaC = false;
+    
+    private void ShowSkillsAsIaC()
+    {
+        showIaC = !showIaC;
+    }
+}
+
