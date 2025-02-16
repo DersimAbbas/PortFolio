@@ -39,8 +39,8 @@ namespace PortfolioBlazor
                 options.PropertyNameCaseInsensitive = true; // ✅ This allows camelCase to map to PascalCase automatically
             });
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => options.DetailedErrors = true);
-
             builder.Services.AddScoped<MinimalApi>();
+            builder.Services.AddBlazorBootstrap();
 
             var app = builder.Build();
 

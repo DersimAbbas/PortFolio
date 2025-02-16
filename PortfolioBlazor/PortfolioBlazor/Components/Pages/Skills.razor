@@ -1,75 +1,144 @@
 ﻿@page "/skills"
 @inject TerminalServices terminalService
+@inject MinimalApi server
+@inject IJSRuntime js
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
+@using PortfolioBlazor.Models
+@using PortfolioBlazor.Server
+@using BlazorBootstrap
+@using Color = System.Drawing.Color
 
-<div class="pipeline-container-horizontal d-flex flex-column align-items-center py-5">
-    <h2 class="text-center mb-5 text-success">My DevOps Journey Pipeline</h2>
-    <div class="pipeline-line-horizontal"></div>
-    <div class="pipeline-stages d-flex flex-wrap justify-content-center align-items-center">
-        @foreach (var stage in Stages)
-        {
-            <div class="stage-card mx-3 text-center @(stage.IsActive ? "active-stage" : "")">
-                <h5>@stage.Title</h5>
-                <p>@stage.Description</p>
-            </div>
-            @if (stage != Stages.Last())
+<div class="azure-dashboard text-white min-vh-100">
+    <div class="azure-header bg-primary d-flex align-items-center p-3 mb-4">
+        <h4 class="m-0 ms-3">🛠️ Tech Skills Dashboard</h4>
+    </div>
+
+    <div class="container">
+        <div class="row g-3">
+            @foreach (var skill in skills)
             {
-                <div class="stage-connector"></div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card skill-card bg-secondary text-white h-100 p-3 shadow-lg rounded"
+                         @onclick:stopPropagation="true"
+                         @onclick="() => ShowSkillModal(skill)">
+                        <h5>@skill.Tech</h5>
+                        <p>Experience: @skill.TechExperience</p>
+                        <p>Skill Level: @skill.SkillLevel</p>
+                    </div>
+                </div>
             }
-        }
+        </div>
     </div>
-
-    <div class="progress mt-4 w-75">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: @Progress%" aria-valuenow="@Progress" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <button class="btn btn-success mt-4" @onclick="StartPipeline">Start Pipeline</button>
+    @if (selectedSkill != null)
+    {
+        <div class="modal fade show d-block" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content text-white p-3">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@selectedSkill.Tech - Progress Over Time</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <LineChart @ref="lineChart" Width="600" Height="300" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
-<DevOpsTerminal/>
+<DevOpsTerminal />
+
 @code {
-    private List<PipelineStage> Stages = new List<PipelineStage>
+    private List<TechsModel> skills = new();
+    private TechsModel? selectedSkill;
+    private TechsModel? availableSkills;
+    private LineChart lineChart = default!;
+    private LineChartOptions lineChartOptions = default!;
+    private ChartData chartData = default!;
+    private int datasetsCount;
+    private int labelsCount;
+    private Random random = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new PipelineStage("🚀 Getting Started", "Explored Git, CI/CD, and cloud basics."),
-        new PipelineStage("🛠️ IaC", "Deployed infrastructure with Terraform."),
-        new PipelineStage("🐳 Containers", "Dockerized apps for dev and testing."),
-        new PipelineStage("🔁 CI/CD", "Automated pipelines with GitHub Actions."),
-        new PipelineStage("☁️ Cloud", "Deployed web apps on Azure."),
-        new PipelineStage("🎯 Portfolio", "Built this portfolio with Blazor.")
-    };
+        skills = await server.FetchTechsAsync();
+        var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
+        var labels = skills.Select(s => s.Tech).ToList();
+        var datasets = new List<IChartDataset>();
 
-    private double Progress = 0;
+        var skillLabel = selectedSkill?.Tech ?? "Skill Progress";
+        var skillValue = new List<double?>();
 
-    private async Task StartPipeline()
-    {
-        terminalService.AddLog("[INFO] Starting DevOps pipeline...");
-
-        for (int i = 0; i < Stages.Count; i++)
+        foreach( var skilLvl in skills)
         {
-            Stages[i].IsActive = true;
-            Progress = ((i + 1) / (double)Stages.Count) * 100;
-            terminalService.AddLog($"[INFO] Running job: {Stages[i].Title}...");
-            StateHasChanged();
-            await Task.Delay(1500); // Simulate job execution
-            terminalService.AddLog($"[INFO] Completed: {Stages[i].Title}.");
+            skillValue.Add(skilLvl.SkillLevel);
+            Console.WriteLine(skilLvl.SkillLevel);
         }
 
-        terminalService.AddLog("[INFO] Build successful! All stages completed.");
-        StateHasChanged();
+        var skilldata = new LineChartDataset
+            {
+                Label = skillLabel,
+                Data = skillValue,
+                BackgroundColor = c.ToRgbString(),
+                BorderColor = c.ToRgbString(),
+                PointRadius = new List<double> { 5 },
+                PointHoverRadius = new List<double> { 8 }
+            };
+        datasets.Add(skilldata);
+
+        chartData = new ChartData
+            {
+                Labels = labels,
+                Datasets = datasets
+            };
+
+        lineChartOptions = new LineChartOptions
+            {
+                Responsive = true,
+                Interaction = new Interaction { Mode = InteractionMode.Index },
+                Scales = new()
+                {
+                    X = new()
+                    {
+                        Title = new() { Text = "Tech Experience", Display = true }
+                    },
+                    Y = new()
+                    {
+                        Title = new() { Text = "Skill Level", Display = true }
+                    }
+                },
+                Plugins = new()
+                {
+                    Title = new() { Text = "Tech Skills Progress", Display = true }
+                }
+            };
     }
 
-    private class PipelineStage
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public bool IsActive { get; set; }
-
-        public PipelineStage(string title, string description)
+        if (firstRender && chartData != null && lineChartOptions != null)
         {
-            Title = title;
-            Description = description;
-            IsActive = false;
+            await lineChart.InitializeAsync(chartData, lineChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ShowSkillModal(TechsModel skill)
+    {
+        selectedSkill = skill;
+        await InvokeAsync(StateHasChanged); // Ensure the modal is rendered first
+        await Task.Delay(100); // Small delay to allow DOM to render
+        if (lineChart != null)
+        {
+            await lineChart.InitializeAsync(chartData, lineChartOptions);
         }
     }
+    private void CloseModal()
+    {
+        selectedSkill = null;
+    }
+    
+
 }

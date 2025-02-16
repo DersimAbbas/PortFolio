@@ -11,7 +11,7 @@ namespace PortfolioBlazor.Models
         public string TechExperience { get; set; }
 
         [JsonPropertyName("skillLevel")]
-        public string SkillLevel { get; set; }
+        public double SkillLevel { get; set; }
     }
 
 
