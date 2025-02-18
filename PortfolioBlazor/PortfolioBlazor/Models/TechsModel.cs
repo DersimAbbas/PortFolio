@@ -4,8 +4,10 @@ namespace PortfolioBlazor.Models
 {
     public class TechsModel
     {
-        [JsonPropertyName("tech")]
-        public string Tech { get; set; }
+        
+        
+        [JsonPropertyName("technologies")]
+        public string Technologies { get; set; }
 
         [JsonPropertyName("techExperience")]
         public string TechExperience { get; set; }

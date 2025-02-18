@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 using PortfolioBlazor.Components;
 using PortfolioBlazor.Components.Pages;
 using PortfolioBlazor.Server;
@@ -31,17 +33,25 @@ namespace PortfolioBlazor
                     return new HttpClientHandler();
                 });
 
-            builder.Services.AddControllers();
+            //identity to authorize admin page.
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<
+                AuthenticationStateProvider,
+                ServerAuthenticationStateProvider
+            >();
+
             builder.Services.AddSingleton<TerminalServices>();
 
             builder.Services.Configure<JsonSerializerOptions>(options =>
             {
-                options.PropertyNameCaseInsensitive = true; // ✅ This allows camelCase to map to PascalCase automatically
+                options.PropertyNameCaseInsensitive = true;
             });
-            builder.Services.AddServerSideBlazor().AddCircuitOptions(options => options.DetailedErrors = true);
+            builder
+                .Services.AddServerSideBlazor()
+                .AddCircuitOptions(options => options.DetailedErrors = true);
             builder.Services.AddScoped<MinimalApi>();
             builder.Services.AddBlazorBootstrap();
-
             var app = builder.Build();
 
             app.UseHttpsRedirection();

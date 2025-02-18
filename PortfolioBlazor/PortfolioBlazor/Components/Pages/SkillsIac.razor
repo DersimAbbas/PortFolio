@@ -1,7 +1,7 @@
-﻿@using PortfolioBlazor.Models
-@code {
-    [Parameter] public List<TechsModel> Skills { get; set; } = new();
-}
+﻿@inject MinimalApi server
+@using PortfolioBlazor.Models
+@using PortfolioBlazor.Server
+
 
 
 
@@ -14,8 +14,8 @@
 
                 @foreach (var skill in Skills)
                 {
-                    @:resource "tech_skill" "@(skill.Tech.ToLower())" {
-                    @:  name        = "@skill.Tech"
+                    @:resource "tech_skill" "@(skill.Technologies.ToLower())" {
+                    @:  name        = "@skill.Technologies"
                     @:  experience  = "@skill.TechExperience"
                     @:  skill_level = @(skill.SkillLevel)
                     @:}
@@ -25,8 +25,13 @@
     </div>
 
 @code {
+    [Parameter]public List<TechsModel> Skills { get; set; } = new();
+
     private bool showIaC = false;
-    
+    protected override async Task OnInitializedAsync()
+    {
+        Skills = await server.FetchTechsAsync();
+    }
     private void ShowSkillsAsIaC()
     {
         showIaC = !showIaC;

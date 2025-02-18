@@ -1,0 +1,42 @@
+﻿@page "/login"
+@using PortfolioBlazor.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h3>Admin Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" @bind-Value="loginModel.Username" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@code {
+    private LoginDto loginModel = new LoginDto();
+
+    private async Task HandleLogin()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:7192/api/auth/login", loginModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Navigate to admin dashboard on successful login
+            Navigation.NavigateTo("/admin");
+        }
+        else
+        {
+            Console.WriteLine("Login failed.");
+        }
+    }
+}

@@ -16,11 +16,11 @@
             @foreach (var skill in skills)
             {
                 <div class="col-lg-4 col-md-6 col-sm-12" style="z-index:85;">
-                    <div class="card skill-card bg-primary text-white shadow-lg rounded"
+                    <div class="card skill-card bg-primary px-3 text-white shadow-lg rounded"
                             @onclick:stopPropagation="true"
                             @onclick="() => ShowSkillModal(skill)">
                             
-                        <h5>@skill.Tech</h5>
+                        <h5>@skill.Technologies</h5>
                         <p>Experience: @skill.TechExperience</p>
                         <p>Skill Level: @skill.SkillLevel</p>
                     </div>
@@ -36,7 +36,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content text-white">
                         <div class="modal-header">
-                            <h5 class="modal-title bg-success text-center">@selectedSkill.Tech - Progress Over Time</h5>
+                            <h5 class="modal-title bg-success text-center">@selectedSkill.Technologies - Progress Over Time</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
                         </div>
                         <div class="modal-body" style="max-width:800px; min-width:320px;">
@@ -87,13 +87,7 @@
 
     private async Task ShowSkillModal(TechsModel skill)
     {
-        var allMonths = new List<string> { "1 Month", "2 Months", 
-        "3 Months", "4 Months", 
-        "5 Months", "6 Months", 
-        "7 Months", "8 Months", 
-        "9 Months", "10 Months", 
-        "11 Months", "12 Months" };
-
+        
         selectedSkill = skill;
         var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
 
@@ -108,7 +102,7 @@
         }
         var skilldata = new LineChartDataset
         {
-            Label = selectedSkill.Tech,  // Use selected skill name
+            Label = selectedSkill.Technologies,  // Use selected skill name
             Data = skillValue,
             BackgroundColor = c.ToRgbString(),
             BorderColor = c.ToRgbString(),
@@ -131,7 +125,7 @@
                 X = new() { Title = new() { Text = "Experience Time", Display = true } },
                 Y = new() { Title = new() { Text = "Skill Level", Display = true } }
             },  
-            Plugins = new() { Title = new() { Text = $"{selectedSkill.Tech} Skill Progress", Display = true } }
+            Plugins = new() { Title = new() { Text = $"{selectedSkill.Technologies} Skill Progress", Display = true } }
         };
 
         await InvokeAsync(StateHasChanged); // Ensure the modal is rendered first
