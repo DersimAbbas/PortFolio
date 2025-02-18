@@ -1,0 +1,85 @@
+﻿
+.animate__animated.animate__fadeInLeft {
+    animation-delay: 2s;
+    animation-duration: 1s;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.typewriter-text {
+    border-right: 2px solid #00ff7f;
+    animation: typing-text 4s steps(40, end) forwards, blink-caret 0.75s step-end 4;
+    font-size: 1.25rem;
+    color: #00ff7f;
+    animation-fill-mode: forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.typewriter-greeting {
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    border-right: 2px solid #00ff7f;
+    animation: typing-greeting 2s steps(60ch, end) forwards, blink-caret 0.75s step-end 2;
+    font-size: 1rem;
+    color: #00ff7f;
+    animation-fill-mode: forwards;
+}
+
+@keyframes typing-text {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 85ch
+    }
+}
+
+@keyframes typing-greeting {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 38ch
+    }
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: #00ff7f;
+    }
+}
+
+.typewriter-text::after {
+    content: "";
+    animation: none;
+}
+
+/* Hide caret after animation completes */
+.typewriter-greeting::after {
+    content: "";
+    display: none;
+}
+
+/*.pushterminal {
+    padding-bottom: 100px !important;
+}
+*/
+.btn{
+    z-index:1000!important;
+}

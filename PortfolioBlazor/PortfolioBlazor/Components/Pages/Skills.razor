@@ -9,19 +9,17 @@
 @using BlazorBootstrap
 @using Color = System.Drawing.Color
 
-<div class="azure-dashboard text-white min-vh-100">
-    <div class="azure-header bg-primary d-flex align-items-center p-3 mb-4">
-        <h4 class="m-0 ms-3">🛠️ Tech Skills Dashboard</h4>
-    </div>
-
-    <div class="container">
+<div class="container-fluid p-3 justify-content-center">
+    <h4 class="text-center fs-1">🛠️ Tech Skills  Dashboard</h4>
+    <div class="d-flex flex-column align-items-center overflow-auto">
         <div class="row g-3">
             @foreach (var skill in skills)
             {
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card skill-card bg-secondary text-white h-100 p-3 shadow-lg rounded"
-                         @onclick:stopPropagation="true"
-                         @onclick="() => ShowSkillModal(skill)">
+                <div class="col-lg-4 col-md-6 col-sm-12" style="z-index:85;">
+                    <div class="card skill-card bg-primary text-white shadow-lg rounded"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => ShowSkillModal(skill)">
+                            
                         <h5>@skill.Tech</h5>
                         <p>Experience: @skill.TechExperience</p>
                         <p>Skill Level: @skill.SkillLevel</p>
@@ -29,31 +27,41 @@
                 </div>
             }
         </div>
-    </div>
-    @if (selectedSkill != null)
-    {
-        <div class="modal fade show d-block" tabindex="-1" role="dialog" >
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content text-white p-3">
-                    <div class="modal-header">
-                        <h5 class="modal-title bg-success">@selectedSkill.Tech - Progress Over Time</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <LineChart @ref="lineChart" Width="600" Height="300" />
+        
+
+        
+        @if (selectedSkill != null)
+        {
+            <div class="modal fade" id="skillprogress" tabindex="-1" aria-hidden="true" aria-labelledby="skillprogressLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content text-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title bg-success text-center">@selectedSkill.Tech - Progress Over Time</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
+                        </div>
+                        <div class="modal-body" style="max-width:800px; min-width:320px;">
+                            <LineChart @ref="lineChart" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-    <div class="text-center mt-4">
-        <Button Color="ButtonColor.Primary" @onclick="ToggleIaCView">Show Skills as IaC</Button>
+        }
+
+        <button class="btn btn-primary mt-3" role="button" style="z-index:10;" @onclick="ToggleIaCView">Show skills As IAC</button>
     </div>
-    
-    @if (showIaC)
-    {
-        <SkillsIac Skills="skills"/>
-    }
+       <div class=" d-flex flex-wrap justify-content-center">
+            @if (showIaC)
+            {
+                
+                    <SkillsIac Skills="skills" />
+
+               
+
+               
+            }
+
+       </div>
+
 </div>
 
 <DevOpsTerminal />
@@ -96,7 +104,7 @@
         for (int i = 1; i <= experienceMonths; i++)
         {
             labels.Add($"{i} Month{(i > 1 ? "s" : "")}");
-            skillValue.Add(selectedSkill.SkillLevel);  // Repeat skill level for each month up to experience
+            skillValue.Add(selectedSkill.SkillLevel * Math.Pow(1.05, i));  // Skill level grows by 5% each month;  // Repeat skill level for each month up to experience
         }
         var skilldata = new LineChartDataset
         {
@@ -107,11 +115,11 @@
             PointRadius = new List<double> { 5 },
             PointHoverRadius = new List<double> { 8 }
         };
-
+        var test = new List<double?>();
         chartData = new ChartData
         {
             Labels = labels,
-            Datasets = new List<IChartDataset> { skilldata }
+            Datasets = new List<IChartDataset> {skilldata }
         };
 
         lineChartOptions = new LineChartOptions
@@ -125,7 +133,7 @@
             },  
             Plugins = new() { Title = new() { Text = $"{selectedSkill.Tech} Skill Progress", Display = true } }
         };
-            
+
         await InvokeAsync(StateHasChanged); // Ensure the modal is rendered first
         await Task.Delay(100); // Small delay to allow DOM to render
 
@@ -133,6 +141,7 @@
         {
             await lineChart.InitializeAsync(chartData, lineChartOptions);
         }
+        await js.InvokeVoidAsync("showModal", "skillprogress");
     }
 
     private void CloseModal()

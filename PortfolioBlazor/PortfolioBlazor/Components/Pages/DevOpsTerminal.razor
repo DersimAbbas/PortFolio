@@ -6,20 +6,20 @@
 @using System.Threading;
 @using System.Threading.Tasks;
 
-<div class="container-fluid p-0">
+<div class="container-fluid p-0 fixed-bottom">
 
     <!-- Terminal Output -->
-    <div class="terminal bg-dark text-success border-top w-100 m-0">
+    <div class="terminal bg-dark text-success border-top border-success w-100">
         <!-- Display Path -->
-        <div class="path-display mb-2">
+        <div class="path-display">
             [📂] Current Path: @currentPath
         </div>
-        <div class="text-success text-center mb-2">
+        <div class="text-success text-center ">
           
             <span>@currentPrompt</span>
         </div>
         <!-- Log Output -->
-        <div class="log-output mb-3">
+        <div class="log-output ">
             @foreach(var log in terminalService.Logs)
             {
                 <div>@log</div>
