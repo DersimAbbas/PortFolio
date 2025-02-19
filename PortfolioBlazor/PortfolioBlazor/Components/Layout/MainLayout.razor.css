@@ -67,4 +67,11 @@ main {
     right: 0.75rem;
     top: 0.5rem;
 }
+.content {
+    padding:20px;
+}
 
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+}

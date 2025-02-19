@@ -1,8 +1,10 @@
 ﻿
+@using PortfolioBlazor.Models
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
 @inject TerminalServices terminalService
 @inject NavigationManager navigator
+@inject HttpClient http
 @using System.Threading;
 @using System.Threading.Tasks;
 
@@ -31,7 +33,7 @@
         <!-- Command Input -->
         <div class="input-group">
             <span class="input-group-text bg-dark text-success border-0">$</span>
-            <input type="text" class="form-control bg-dark text-success border-0"
+            <input type="@GetInputType()" class="form-control bg-dark text-success border-0"
                    @bind="command" @bind:event="oninput"
                    @onkeypress="HandleKeyPress"
                    placeholder="Enter command here..." autofocus />
@@ -61,6 +63,12 @@
         new string("'ls skills'"),
         new string("'ls info'")
     };
+    private bool isAuthenticating = false;
+    private string username = "";
+    private string password = "";
+    private bool enterUsername = false;
+    private bool enterPassword = false;
+    private string passwordMasked = "";
     protected  override async Task OnInitializedAsync()
     {
 
@@ -84,8 +92,35 @@
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
+       
+        
+        
         if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(command))
         {
+
+            if (enterUsername)
+            {
+                username = command;
+                terminalService.AddLog($"[INFO] Username entered.");
+               
+                enterUsername = false;
+                enterPassword = true;
+                command = "";
+                return;
+            }
+
+            if (enterPassword)
+            {
+                password = command; 
+                terminalService.AddLog($"[INFO] Authenticating..."); 
+                enterPassword = false;
+                isAuthenticating = false;
+                command = ""; 
+                await AuthenticateUser(username, password);
+                return;
+            }
+
+
             terminalService.AddLog($"$ {command}");
             switch (command.ToLower())
             {
@@ -141,6 +176,14 @@
                     }
                     break;
 
+                case "sudo admin":
+                    terminalService.AddLog($"[INFO] Enter UserName:");
+                    isAuthenticating = true;
+                    enterUsername = true;
+                    command = "";
+                    break;
+
+
                 default:
                     terminalService.AddLog($"[ERROR] Unknown command: '{command}', type ls help for all available commands.");
                     break;
@@ -158,6 +201,27 @@
         currentPrompt = prompts[promptIndex];
         InvokeAsync(StateHasChanged); // Refresh UI
     }
+    private async Task AuthenticateUser(string username, string password)
+    {
+        var loginDto = new LoginDto { Username = username, Password = password };
+        var response = await http.PostAsJsonAsync("https://localhost:7192/api/auth/login", loginDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            terminalService.AddLog($"[SUCCESS] Authentication successful! Redirecting to admin...");
+            await Task.Delay(1000);
+            navigator.NavigateTo("/admin");
+        }
+        else
+        {
+            terminalService.AddLog($"[ERROR] Authentication failed. Incorrect username or password.");
+        }
+    }
+    private string GetInputType()
+    {
+        return enterPassword ? "password" : "text";
+    }
+
 
     public void Dispose()
     {

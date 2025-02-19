@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+#gitignore
+PortfolioBlazor\Components\Public\Controls\TempAdmin.razor
+/PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TempAdmin.razor
