@@ -15,23 +15,9 @@
         
             @foreach (var skill in skills)
             {
-                <div class="col mb-3">
-                <div class="card skill-card border-primary pb-5 text-white rounded @(GetCardBackgroundClass(skill.Technologies))" style="z-index:500;"
-                         @onclick:stopPropagation="true"
-                         @onclick="() => ShowSkillModal(skill)">
-
-                        <div class="card-header d-flex justify-content-between">
-                            <h5>@skill.Technologies</h5>
-                            <img src="/Images/@(skill.image != null ? skill.image :"favicon.png")" style="max-width:50px; max-height:30px" />
-                          
-                        </div>
-
-                        <div class="card-body">
-                            <p>Experience: @skill.TechExperience</p>
-                            <p>Skill Level: @skill.SkillLevel</p>
-                        </div>
-                    </div>
-                </div>
+              <div class="col-2 mb-3">
+                  <SkillCard Skill="skill" IsAuthorized="true"/>
+              </div>
 
             }
             @if (selectedSkill != null)
@@ -50,8 +36,6 @@
                     </div>
                 </div>
             }
-       
-
     </div>
         <div class="d-flex justify-content-center">
 

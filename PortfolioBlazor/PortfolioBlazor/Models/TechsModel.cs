@@ -11,6 +11,9 @@ namespace PortfolioBlazor.Models
         [JsonPropertyName("project")]
         public string? project { get; set; }
 
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
         [JsonPropertyName("githubUrl")]
         public string? githubUrl { get; set; }
 
@@ -27,5 +30,10 @@ namespace PortfolioBlazor.Models
         public double SkillLevel { get; set; }
         [JsonPropertyName("image")]
         public string? image { get; set; }
+
+        public List<string> TechnologiesList => Technologies.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                       .Select(t => t.Trim())
+                                                       .ToList();
     }
 }
+    

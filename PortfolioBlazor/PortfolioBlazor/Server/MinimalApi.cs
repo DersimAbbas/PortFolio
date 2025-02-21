@@ -70,7 +70,7 @@ namespace PortfolioBlazor.Server
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7192/api/tech/{id}", updatedTech);
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7192/api/updatetech/{id}", updatedTech);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace PortfolioBlazor.Server
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var response = await _httpClient.DeleteAsync($"https://localhost:7192/api/deletetech/{id}");
+                var response = await _httpClient.DeleteAsync($"https://localhost:7192/api/deletetech{id}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

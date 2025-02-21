@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/s"
 @using PortfolioBlazor.Models
 @using PortfolioBlazor.Server
 @using PortfolioBlazor.Services
@@ -8,9 +8,28 @@
 @inject MinimalApi server
 
 <!-- Main Content -->
+<!--TO DO LIST COLLAPSED-->
+<!--TO DO LIST LATER
+TO DO LIST IMPROVE AFTER FIXING PROJECTS COMPONENT.
+
+ändra font
+robotic font
+ändra devops animation
+
+padding bottom i bild
+
+contrast i ls skills
+
+pipeline
+loading bar
+
+terminal desktop fixa större size
+
+info för knappar i home page.
+email.-->
 <div class="container-fluid pt-5 text-white text-center">
     <div id="particles-js"></div>
-        <div class="d-flex flex-column align-items-center">
+    <div class="d-flex flex-column align-items-center">
             <img src="/Images/Dersim2.jpg" class="rounded-circle animate__animated animate__fadeInLeft" alt="Dersim Abbas Profile" style="max-width:200px;" />
            <p class="display-6 fw-bold ">Hi! I’m Dersim Abbas - Junior DevOps Engineer</p>
 
@@ -20,16 +39,21 @@
             <p class="mb-4 fs-5">From CI/CD pipelines to Infrastructure as Code, I help bridge the gap between Development and Operations.</p>
             <p class="fs-5">Use the terminal at the bottom for interacting and fun experience! Alternatives: buttons.</p>
             <div class="p-2"style="z-index:50;">
-                <button class="btn btn-success btn-lg">View Projects</button>
+                <button class="btn btn-success btn-lg" @onclick="ProjectBtn">View Projects</button>
                 <button class="btn btn-outline-success btn-lg" type="button" @onclick="SkillsBtn">Explore Skills</button>
             </div>
-        @foreach(var skill in Skills)
+    </div>
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-8 g-2 d-flex justify-content-start mx-auto" style="max-width:800px;">
+        @if (Skills.Any())
         {
-            
-            <ProjectTest Skill="skill" />
+            @foreach (var skill in Skills)
+            {
+                <SkillCard Skill="skill"/>
+                
+            }
         }
     </div>
-    
+
 </div>
 
    <DevOpsTerminal />
@@ -53,6 +77,10 @@
     private void SkillsBtn()
     {
         navigator.NavigateTo("/portfolio");
+    }
+    private void ProjectBtn()
+    {
+        navigator.NavigateTo("/testing");
     }
     
 

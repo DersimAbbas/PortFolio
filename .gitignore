@@ -367,3 +367,5 @@ FodyWeavers.xsd
 PortfolioBlazor\Components\Public\Controls\TempAdmin.razor
 /PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TempAdmin.razor
 /PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TempAdmin.razor.css
+/PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TestingEvent.razor
+/PortfolioBlazor/PortfolioBlazor/Components/Admin/TempAdmin.razor

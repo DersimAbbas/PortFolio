@@ -21,7 +21,7 @@
         @foreach (var skill in skills)
         {
             <div class="col pb-2">
-                <div class="card skill-card border-primary pb-1 px-2 text-white rounded @(GetCardBackgroundClass(skill.Technologies))" style="z-index:500;"
+                <div class="card skill-card border-primary pb-1 px-2 rounded @(GetCardBackgroundClass(skill.Technologies))" style="z-index:500;"
                      @onclick="()=>DisplayEditForm(skill.Id)">
                     <div class="card-header d-flex justify-content-between">
                         <!-- Normal Card View -->
@@ -29,7 +29,7 @@
                         <img src="/Images/@(skill.image  != null ? skill.image :  "favicon.png")" style="max-width:50px; max-height:35px" />
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body text-bg-secondary">
                         @if (editingSkillId != skill.Id)
                         {
 
@@ -56,6 +56,21 @@
                                 <div class="mb-2">
                                     <label class="form-label">Experience</label>
                                     <InputText @bind-Value="skill.TechExperience" class="form-control" />
+                                    <ValidationMessage For="() => skill.TechExperience" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Project</label>
+                                    <InputText @bind-Value="skill.project" class="form-control" />
+                                    <ValidationMessage For="() => skill.TechExperience" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Github</label>
+                                    <InputText @bind-Value="skill.githubUrl" class="form-control" />
+                                    <ValidationMessage For="() => skill.TechExperience" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Description</label>
+                                    <InputText @bind-Value="skill.Description" class="form-control" />
                                     <ValidationMessage For="() => skill.TechExperience" />
                                 </div>
 

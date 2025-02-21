@@ -48,3 +48,75 @@ h1:focus {
     background-color: #0f0f0f;
     color: #fff;
 }
+.bg-blazor {
+    background-color: rgb(90, 32, 186, 0.38);
+}
+
+.bg-react {
+    background-color: rgba(97, 218, 251, 0.8); /* React Logo Blue */
+}
+
+.bg-csharp {
+    background-color: rgba(99, 46, 134, 0.8); /* C# Purple */
+}
+
+.bg-docker {
+    background-color: rgba(0, 117, 177, 0.8); /* Docker Blue */
+}
+
+.bg-terraform {
+    background-color: rgba(93, 61, 178, 0.8); /* Terraform Purple */
+}
+
+#cloud-js {
+    position: fixed;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.bg-python {
+    background: linear-gradient(180deg, rgba(255, 223, 0, 0.8) 50%, rgba(48, 105, 152, 0.8) 50%);
+}
+
+.bg-sql {
+    background-color: rgba(0, 84, 135, 0.8); /* SQL Blue */
+}
+
+.bg-azure {
+    background-color: rgba(0, 120, 212, 0.8); /* Azure Blue */
+}
+
+.bg-kubernetes {
+    background-color: rgba(50, 112, 214, 0.8); /* Kubernetes Blue */
+}
+
+.bg-mongodb {
+    background-color: rgba(77, 182, 172, 0.8); /* MongoDB Green */
+}
+
+.bg-firebase {
+    background-color: rgba(255, 167, 38, 0.8); /* Firebase Orange */
+}
+
+.bg-restapi {
+    background-color: rgba(0, 150, 136, 0.8); /* REST API Teal */
+}
+
+.skill-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .skill-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+
+
+.skill-card {
+    cursor: pointer;
+}
