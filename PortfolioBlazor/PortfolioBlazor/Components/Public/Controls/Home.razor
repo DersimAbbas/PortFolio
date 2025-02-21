@@ -1,8 +1,11 @@
 ﻿@page "/"
+@using PortfolioBlazor.Models
+@using PortfolioBlazor.Server
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
 @inject IJSRuntime jsruntime
 @inject NavigationManager navigator
+@inject MinimalApi server
 
 <!-- Main Content -->
 <div class="container-fluid pt-5 text-white text-center">
@@ -20,15 +23,21 @@
                 <button class="btn btn-success btn-lg">View Projects</button>
                 <button class="btn btn-outline-success btn-lg" type="button" @onclick="SkillsBtn">Explore Skills</button>
             </div>
-     
+        @foreach(var skill in Skills)
+        {
+            
+            <ProjectTest Skill="skill" />
+        }
     </div>
-
+    
 </div>
 
    <DevOpsTerminal />
 
 @code {
+
     private bool Display = false;
+    private List<TechsModel>? Skills = new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -36,6 +45,11 @@
             await jsruntime.InvokeVoidAsync("loadParticles");
         }
     }
+    protected override async Task OnInitializedAsync()
+    {
+        Skills = await server.FetchTechsAsync();
+    }
+
     private void SkillsBtn()
     {
         navigator.NavigateTo("/portfolio");

@@ -1,32 +1,93 @@
 ﻿@page "/projects"
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime js
+@inject MinimalApi server
+@inject NavigationManager navigator
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using PortfolioBlazor.Server
+@using PortfolioBlazor.Models
 @using PortfolioBlazor.Services
 @using Microsoft.AspNetCore.Components.Web
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+@if (!IsAuthenticated)
+{
+    <p>Redirecting to login...</p>
+    
+}
+else
+{
+    <div class="container-fluid p-5">
+        <div class="row row-cols-1 row-cols-lg-2 g-3 d-flex justify-content-start mx-auto" style="max-width:1000px">
+            @foreach (var skill in Project)
+            {
+                <ProjectTest Skill="skill" OnEdit="UpdateSkill">
+                    <AdminContent>
+                        <EditForm Model="skill" OnValidSubmit="@(async () => await UpdateSkill(skill))">
+                            <div class="card skill-card border bg-danger pb-5 text-white rounded" style="z-index:500;">
+                                <img class="card-img-top" src="/Images/firebase.png" />
+                                <div class="card-body">
+                                    <h5 class="card-title">@skill.Technologies</h5>
+                                    <InputText @bind-Value="skill.Technologies" class="form-control" />
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-success"@onclick="() => UpdateSkill(skill)">Save</button>
+                                    <button class="btn btn-danger" @onclick="() => DeleteSkill(skill.Id)">Delete</button>
+                                    <button type="submit" class="btn btn-success" @onclick="() => DisplayEditForm(skill.Id)">Edit</button>
+                                </div>
+                            </div>
+                        </EditForm>
+                    </AdminContent>
+                </ProjectTest>
+            }
         </div>
     </div>
-</div>
-@code {
-  
+   
 }
 
+<DevOpsTerminal/>
+@code{
+    public List<TechsModel> Project = new();
+    public TechsModel? skill;
+    public string testmsg = "";
+    private string editskill = "";
+    public TechsModel? selectedSkill;
+    private bool IsAuthenticated = false;
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            navigator.NavigateTo("/login");
+            return;
+        }
+
+        IsAuthenticated = true;
+        Project = await server.FetchTechsAsync();
+    }
+
+    private async Task DisplayEditForm(string skillId)
+    {
+        if (editskill == skillId) return; // Prevent re-render if already editing
+
+        editskill = ""; // Temporary reset
+
+        editskill = skillId;
+        selectedSkill = Project.FirstOrDefault(s => s.Id == skillId);
+
+        await InvokeAsync(StateHasChanged); // Force UI refresh
+    }
+
+    private async Task UpdateSkill(TechsModel skill)
+    {
+        await server.UpdateTechAsync(skill.Id, skill);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DeleteSkill(string id)
+    {
+        await server.DeleteTechAsync(id);
+        Project = await server.FetchTechsAsync();
+    }
+}
+}

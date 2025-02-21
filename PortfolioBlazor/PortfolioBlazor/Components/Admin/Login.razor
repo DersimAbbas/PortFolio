@@ -1,42 +1,91 @@
 ﻿@page "/login"
+@using Microsoft.AspNetCore.Diagnostics
+@using Newtonsoft.Json.Serialization
 @using PortfolioBlazor.Models
+@using System.Text.Json
 @inject HttpClient Http
-@inject NavigationManager Navigation
+@inject NavigationManager navigator
+@inject IJSRuntime js
 
-<h3>Admin Login</h3>
+<div class="container-fluid p-5" >
+    <h3 class="text-center">Admin Login</h3>
+    <div class="d-flex justify-content-center mx-auto">
 
-<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <EditForm Model="@loginModel" OnValidSubmit="@(async () => await HandleLogin(loginModel))">
+           
+            <DataAnnotationsValidator />
+          
 
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <InputText id="username" @bind-Value="loginModel.Username" class="form-control" />
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <InputText id="username" @bind-Value="loginModel.Username" class="form-control" />
+                <ValidationMessage For="() => loginModel.Username"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
+                <ValidationMessage For="() => loginModel.Password" />
+
+                @if (errorMessage != null)
+                {
+                    <p class="text-danger text-center mt-2">@errorMessage</p>
+                }
+            </div>
+            <div class="m-5 px-5">
+                <button type="submit" class="btn btn-success">Authenticate</button>
+
+            </div>
+        </EditForm>
+        
     </div>
-
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
+    <div class="d-flex justify-content-center mt-2">
+      <button type="button" class="btn btn-primary"@onclick="HomeButton" style="z-index:20;">Home Page</button>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-primary">Login</button>
-</EditForm>
 
 @code {
     private LoginDto loginModel = new LoginDto();
-
-    private async Task HandleLogin()
+    private string? errorMessage;
+    private async Task HandleLogin(LoginDto login)
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:7192/api/auth/login", loginModel);
+        
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7192/api/auth/login", loginModel);
 
-        if (response.IsSuccessStatusCode)
-        {
-            // Navigate to admin dashboard on successful login
-            Navigation.NavigateTo("/admin");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                // Store JWT token in localStorage
+                await js.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
+
+                // Redirect to the admin panel after login
+                navigator.NavigateTo("/projects");
+            }
+            else
+            {
+                errorMessage = "Invalid credentials. Please try again.";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("Login failed.");
+            errorMessage = $"Login failed: {ex.Message}";
         }
+    }
+    private class LoginResponse
+    {
+        public string Token { get; set; } = string.Empty;
+    }
+    private void ResetForm()
+    {
+        loginModel = new LoginDto();
+        StateHasChanged();
+    }
+    private void HomeButton()
+    {
+        navigator.NavigateTo("/");
     }
 }

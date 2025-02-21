@@ -1,12 +1,14 @@
 ﻿@page "/admin"
 @inject HttpClient http
 @inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Authorization
 @using PortfolioBlazor.Components.Layout
 @using PortfolioBlazor.Models
+@using System.Data
 @rendermode InteractiveServer
 @layout AdminLayout
 @inject IJSRuntime jsruntime
-
+@attribute [Authorize(Roles = "admin")]
 <div id="cloud-js"></div>
 
 <div class="container-fluid p-5">
@@ -19,12 +21,12 @@
         @foreach (var skill in skills)
         {
             <div class="col pb-2">
-                <div class="card border-primary pb-1 px-2 text-white rounded @(GetCardBackgroundClass(skill.Technologies))" style="z-index:500;"
+                <div class="card skill-card border-primary pb-1 px-2 text-white rounded @(GetCardBackgroundClass(skill.Technologies))" style="z-index:500;"
                      @onclick="()=>DisplayEditForm(skill.Id)">
                     <div class="card-header d-flex justify-content-between">
                         <!-- Normal Card View -->
                         <h5>@skill.Technologies</h5>
-                        <img src="/Images/@(skill.Image  != null ? skill.Image :  "favicon.png")" style="max-width:50px; max-height:35px" />
+                        <img src="/Images/@(skill.image  != null ? skill.image :  "favicon.png")" style="max-width:50px; max-height:35px" />
                     </div>
 
                     <div class="card-body">
@@ -64,9 +66,9 @@
                                 </div>
 
                                 <div class="mb-2">
-                                    <label class="form-label">Image name</label>
-                                    <InputText @bind-Value="skill.Image" class="form-control" />
-                                    <ValidationMessage For="() => skill.Image" />
+                                    <label class="form-label">image name</label>
+                                    <InputText @bind-Value="skill.image" class="form-control" />
+                                    <ValidationMessage For="() => skill.image" />
                                 </div>
 
                                 <button type="submit" class="btn btn-success">Save</button>
@@ -122,7 +124,7 @@
                 Technologies = "New Technology", // Default name
                 TechExperience = "0 years", // Default experience
                 SkillLevel = 1, // Default skill level
-                Image = "favicon.png" // Default image
+                image = "favicon.png" // Default image
             };
 
         // Add the new skill to the list

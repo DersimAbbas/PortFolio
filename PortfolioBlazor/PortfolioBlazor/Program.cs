@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Identity;
 using PortfolioBlazor.Components;
 using PortfolioBlazor.Components.Pages;
 using PortfolioBlazor.Server;
@@ -34,6 +35,7 @@ namespace PortfolioBlazor
                 });
 
             //identity to authorize admin page.
+            
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<

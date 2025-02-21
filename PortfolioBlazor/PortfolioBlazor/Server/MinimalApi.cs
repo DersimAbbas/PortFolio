@@ -1,5 +1,7 @@
 ﻿using ChartJs.Blazor.Common.Axes.Ticks;
+using Microsoft.JSInterop;
 using PortfolioBlazor.Models;
+using System.Net.Http.Headers;
 using static System.Net.WebRequestMethods;
 
 namespace PortfolioBlazor.Server
@@ -7,10 +9,11 @@ namespace PortfolioBlazor.Server
     public class MinimalApi
     {
         private readonly HttpClient _httpClient;
-
-        public MinimalApi(HttpClient httpClient)
+        private readonly IJSRuntime _jsRuntime;
+        public MinimalApi(HttpClient httpClient, IJSRuntime jsruntime)
         {
             _httpClient = httpClient;
+            _jsRuntime = jsruntime;
         }
 
         public async Task<List<TechsModel>> FetchTechsAsync()
@@ -37,19 +40,64 @@ namespace PortfolioBlazor.Server
         }
 
 
-        public async Task AddTechAsync(TechsModel tech)
+        public async Task<bool> AddTechAsync(TechsModel newTech)
         {
-            await _httpClient.PostAsJsonAsync("https://localhost:7192/api/newtech", tech);
+            try
+            {
+                var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var response = await _httpClient.PostAsJsonAsync("https://localhost:7192/api/newtech", newTech);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding tech: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task UpdateTechAsync(string id, TechsModel tech)
+        public async Task<bool> UpdateTechAsync(string id, TechsModel updatedTech)
         {
-            await _httpClient.PutAsJsonAsync($"https://localhost:7192/api/tech{id}", tech);
+            try
+            {
+                var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7192/api/tech/{id}", updatedTech);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating tech: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task DeleteTechAsync(string id)
+        public async Task<bool> DeleteTechAsync(string id)
         {
-            await _httpClient.DeleteAsync($"https://localhost:7192/api/deletetech{id}");
+            try
+            {
+                var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var response = await _httpClient.DeleteAsync($"https://localhost:7192/api/deletetech/{id}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting tech: {ex.Message}");
+                return false;
+            }
         }
     }
 }

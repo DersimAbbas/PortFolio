@@ -8,6 +8,12 @@ namespace PortfolioBlazor.Models
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
+        [JsonPropertyName("project")]
+        public string? project { get; set; }
+
+        [JsonPropertyName("githubUrl")]
+        public string? githubUrl { get; set; }
+
         [Required(ErrorMessage = "Technology Name is required.")]
         [JsonPropertyName("technologies")]
         public string Technologies { get; set; }
@@ -20,6 +26,6 @@ namespace PortfolioBlazor.Models
         [Required(ErrorMessage = "Skill level is required.")]
         public double SkillLevel { get; set; }
         [JsonPropertyName("image")]
-        public string? Image { get; set; }
+        public string? image { get; set; }
     }
 }

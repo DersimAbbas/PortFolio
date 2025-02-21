@@ -55,3 +55,17 @@
 .bg-restapi {
     background-color: rgba(0, 150, 136, 0.8); /* REST API Teal */
 }
+.skill-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .skill-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+
+
+.skill-card {
+    cursor: pointer;
+}
