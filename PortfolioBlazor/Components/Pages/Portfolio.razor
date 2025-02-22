@@ -1,0 +1,93 @@
+﻿@page "/portfolio"
+@inject TerminalServices terminalService
+
+
+<div class="container-fluid p-5">
+    <h2 class="text-center text-success">My DevOps Journey Pipeline</h2>
+    <div class="flex-column">
+        <div class="pt-5 d-flex flex-wrap justify-content-center align-items-center">
+            @foreach (var stage in Stages)
+            {
+                <div class="stage-card mx-3 text-center @(stage.IsActive ? "active-stage" : "")">
+                    <h5>@stage.Title</h5>
+                    <p>@stage.Description</p>
+                </div>
+                @if (stage != Stages.Last())
+                {
+                    <div class="stage-connector"></div>
+                }
+            }
+        </div>
+
+
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="@Progress" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: @Progress%"></div>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <button class="btn btn-success" @onclick="StartPipeline" style="z-index:150;">Start Pipeline</button>
+        </div>
+        <div class="progress-label text-center pt-3 d-flex align-items-center justify-content-center">
+            <h5 class="m-0">@CurrentJobStatus</h5> <!-- Dynamic label -->
+            @if (IsRunning)
+            {
+                <img src="/Images/devopsIcon.svg" alt="Running" class="spinner-icon ms-2" />
+            }
+        </div>
+
+    </div>
+</div>
+
+<DevOpsTerminal />
+@code {
+    private string CurrentJobStatus { get; set; } = "Waiting to start pipeline...";
+    private bool IsRunning { get; set; } = false;
+    private List<PipelineStage> Stages = new List<PipelineStage>
+    {
+        new PipelineStage("🚀 Getting Started", "Explored Git, CI/CD, and cloud basics."),
+        new PipelineStage("🛠️ IaC", "Deployed infrastructure with Terraform."),
+        new PipelineStage("🐳 Containers", "Dockerized apps for dev and testing."),
+        new PipelineStage("🔁 CI/CD", "Automated pipelines with GitHub Actions."),
+        new PipelineStage("☁️ Cloud", "Deployed web apps on Azure."),
+        new PipelineStage("🎯 Portfolio", "Built this portfolio with Blazor.")
+    };
+
+    private double Progress = 0;
+
+    private async Task StartPipeline()
+    {
+        terminalService.AddLog("[INFO] Starting DevOps pipeline...");
+        IsRunning = true;
+
+        for (int i = 0; i < Stages.Count; i++)
+        {
+            Stages[i].IsActive = true;
+            Progress = ((i + 1) / (double)Stages.Count) * 100;
+            CurrentJobStatus = $"Running job: {Stages[i].Title}...";
+            terminalService.AddLog($"[INFO] Running job: {CurrentJobStatus}...");
+            await Task.Delay(1500); // Simulate job execution
+
+            terminalService.AddLog($"[INFO] Completed: {Stages[i].Title}.");
+            StateHasChanged();
+            terminalService.AddLog($"[INFO] {CurrentJobStatus}");
+        }
+        CurrentJobStatus = "Pipeline execution completed successfully!";
+        terminalService.AddLog("[INFO] Build successful! All stages completed.");
+        IsRunning = false;
+        StateHasChanged();
+    }
+
+
+    private class PipelineStage
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
+
+        public PipelineStage(string title, string description)
+        {
+            Title = title;
+            Description = description;
+            IsActive = false;
+        }
+    }
+}

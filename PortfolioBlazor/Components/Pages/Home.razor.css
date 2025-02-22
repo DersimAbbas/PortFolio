@@ -1,0 +1,41 @@
+﻿
+.animate__animated.animate__fadeInLeft {
+    animation-delay: 2s;
+    animation-duration: 1s;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+#cloud-js {
+    position: fixed;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.typewriters-text {
+    border-right: 2px solid #00ff7f;
+    font-size: 1.5rem;
+    color: #00ff7f;
+    /* Allow wrapping */
+    white-space: normal;
+    display: inline-block;
+}
+
+/*.pushterminal {
+    padding-bottom: 100px !important;
+}
+*/
+.btn{
+    z-index:1000!important;
+}

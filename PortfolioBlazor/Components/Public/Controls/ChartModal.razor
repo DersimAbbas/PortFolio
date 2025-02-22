@@ -1,0 +1,97 @@
+﻿@using PortfolioBlazor.Models
+@inject IJSRuntime JS
+
+<div class="modal fade" id="skillprogress" tabindex="-1" aria-hidden="true" aria-labelledby="skillprogressLabel">
+    <div class="modal-dialog">
+        <div class="modal-content text-white">
+            <div class="modal-header">
+                <h5 class="modal-title bg-success text-center">
+                    @_selectedSkill?.Technologies - Progress Over Time
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body" style="max-width:800px; min-width:320px;">
+                <LineChart @ref="lineChartComponent" ChartData="_chartData" ChartOptions="_chartOptions" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+    //boiler plate - setup to use blazor bootsraps chart and some configuration for displaying it inside a modal.
+    private TechsModel? _selectedSkill;
+    private ChartData _chartData = new ChartData();
+    private LineChartOptions _chartOptions = new LineChartOptions();
+    private LineChart lineChartComponent = default!;
+
+    public async Task ShowSkillModalAsync(TechsModel skill)
+    {
+        _selectedSkill = skill;
+        BuildChartData();
+
+       
+        await Task.Delay(100);
+
+        if (lineChartComponent != null)
+        {
+            await lineChartComponent.InitializeAsync(_chartData, _chartOptions, new string[0]);
+        }
+      
+        await JS.InvokeVoidAsync("showModal", "skillprogress");
+    }
+
+ 
+    private void BuildChartData()
+    {
+        if (_selectedSkill is null) return;
+
+        var labels = new List<string>();
+        var skillValues = new List<double?>();
+       
+        int experienceMonths = int.Parse(new string(_selectedSkill.TechExperience.Where(char.IsDigit).ToArray()));
+
+        for (int i = 1; i <= experienceMonths; i++)
+        {
+            labels.Add($"{i} Month{(i > 1 ? "s" : "")}");
+            
+            skillValues.Add(_selectedSkill.SkillLevel * Math.Pow(1.05, i));
+        }
+
+       
+        var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
+
+        var dataset = new LineChartDataset
+            {
+                Label = _selectedSkill.Technologies,
+                Data = skillValues,
+                BackgroundColor = c.ToRgbString(),
+                BorderColor = c.ToRgbString(),
+                PointRadius = new List<double> { 5 },
+                PointHoverRadius = new List<double> { 8 }
+            };
+
+        _chartData = new ChartData
+            {
+                Labels = labels,
+                Datasets = new List<IChartDataset> { dataset }
+            };
+
+        _chartOptions = new LineChartOptions
+            {
+                Responsive = true,
+                Interaction = new Interaction { Mode = InteractionMode.Index },
+                Scales = new()
+                {
+                    X = new() { Title = new() { Text = "Experience Time", Display = true } },
+                    Y = new() { Title = new() { Text = "Skill Level", Display = true } }
+                },
+                Plugins = new() { Title = new() { Text = $"{_selectedSkill.Technologies} Skill Progress", Display = true } }
+            };
+    }
+
+    private void CloseModal()
+    {
+        _selectedSkill = null;
+    }
+}

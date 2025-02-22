@@ -369,3 +369,6 @@ PortfolioBlazor\Components\Public\Controls\TempAdmin.razor
 /PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TempAdmin.razor.css
 /PortfolioBlazor/PortfolioBlazor/Components/Public/Controls/TestingEvent.razor
 /PortfolioBlazor/PortfolioBlazor/Components/Admin/TempAdmin.razor
+/PortfolioBlazor/Components/Admin/TempAdmin.razor
+/PortfolioBlazor/Components/Public/Controls/TestProject.razor
+/PortfolioBlazor/Components/Public/Controls/TestProject.razor.css

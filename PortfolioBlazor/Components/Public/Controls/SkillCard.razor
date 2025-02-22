@@ -1,0 +1,106 @@
+﻿
+<div class="card skill-card border border-secondary shadow-sm @(GetCardBackgroundClass(Skill.Technologies)) text-light rounded" style="z-index:500;"
+     @onclick="()=>OnSkillClicked.InvokeAsync(Skill)">
+
+    <div class="card-header d-flex justify-content-between">
+        <h5>@Skill.Technologies</h5>
+        <img src="/Images/@(Skill.image != null ? Skill.image :"favicon.png")" style="max-width:50px; max-height:30px" />
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@Skill.Technologies</h5>
+        <p class="card-text">@Skill.TechExperience</p>
+    </div>
+
+    <div class="card-footer border-0">
+        @if (IsAuthorized)
+        {
+            if (IsEdit)
+            {
+                <EditForm Model="Skill" OnValidSubmit="()=> OnSkillUpdate.InvokeAsync(Skill)">
+                    <div>
+                        <InputText @bind-Value="Skill.Technologies" class="form-control" placeholder="Tech Name" />
+                        <InputText @bind-Value="Skill.TechExperience" class="form-control"/>
+                        <InputNumber @bind-Value="Skill.SkillLevel" class="form-control" placeholder="Level" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success" @onclick="UpdatedSkill">Update</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    </div>
+                </EditForm>
+            }
+            else
+            {
+                <div class="d-flex justify-content-center mx-auto">
+                    <button type="button" class="btn btn-primary" @onclick="ToggleEdit">Edit</button>
+                    <button type="button" class="btn btn-danger" @onclick="() => OnDelete.InvokeAsync(Skill.Id)">Delete</button>
+                </div>
+            }
+        }
+
+      
+    </div>
+</div>
+@code {
+    [Parameter] public TechsModel Skill { get; set; } = default!;
+    [Parameter] public EventCallback<TechsModel> OnSkillUpdate { get; set; }
+    [Parameter] public EventCallback<string> OnDelete { get; set; }
+    [Parameter] public bool IsAuthorized { get; set; }
+    [Parameter] public EventCallback<TechsModel> OnSkillClicked { get; set; }
+   
+    private bool IsEdit = false;
+    private TechsModel EditSkill = new();
+
+    protected override void OnInitialized()
+    {
+
+
+        EditSkill.Id = Skill.Id;
+        EditSkill.Technologies = Skill.Technologies;
+        EditSkill.SkillLevel = Skill.SkillLevel;
+        EditSkill.TechExperience = Skill.TechExperience;
+        EditSkill.image = Skill.image;
+
+    }
+   
+    private void ToggleEdit()
+    {
+        IsEdit = true;
+    }
+
+    private void CancelEdit()
+    {
+        IsEdit = false;
+        Skill.Id = EditSkill.Id;
+        Skill.Technologies = EditSkill.Technologies;
+        Skill.SkillLevel = EditSkill.SkillLevel;
+        Skill.TechExperience = EditSkill.TechExperience;
+        Skill.image = EditSkill.image;
+    }
+
+
+
+    private string GetCardBackgroundClass(string techName)
+    {
+        return techName.ToLower() switch
+        {
+            "blazor" => "bg-blazor",
+            "react" => "bg-react",
+            "c#" => "bg-csharp",
+            "docker" => "bg-docker",
+            "terraform" => "bg-terraform",
+            "mongo" => "bg-mongodb",
+            "sql" => "bg-sql",
+            "python" => "bg-python",
+            "firebase" => "bg-firebase",
+            "rest api" => "bg-restapi",
+            "kubernetes" => "bg-kubernetes",
+            "azure" => "bg-azure",
+            _ => "bg-default"
+        };
+    }
+    private void UpdatedSkill()
+    {
+        OnSkillUpdate.InvokeAsync(Skill);
+        IsEdit = false;
+    }
+}

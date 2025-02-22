@@ -1,0 +1,39 @@
+﻿.deep-sky-bg {
+    background: rgba(30, 144, 255, 0.7); /* Deep Sky Blue */
+}
+
+.twilight-sky-bg {
+    background: rgba(25, 104, 190, 0.8); /* Darker Blue with More Depth */
+}
+
+.gradient-sky-bg {
+    background: linear-gradient(to bottom, rgba(25, 104, 190, 0.8), rgba(70, 130, 180, 0.7)); /* Gradient effect */
+}
+
+.nightfall-sky-bg {
+    background: rgba(15, 82, 186, 0.9); /* Slightly deeper blue, closer to nightfall */
+}
+
+.admin-content {
+    padding: 20px; /* Ensure inner content is spaced properly */
+    color: white; /* Ensure contrast */
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }

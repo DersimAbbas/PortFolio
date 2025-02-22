@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Javascript\script.js" />
+  </ItemGroup>
+
+
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.Identity.Mongo" Version="9.1.2" />
+		<PackageReference Include="Blazor.Bootstrap" Version="3.3.1" />
+		<PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
+		<PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.13" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.5.0" />
+	</ItemGroup>
+
+</Project>

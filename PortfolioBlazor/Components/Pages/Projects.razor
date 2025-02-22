@@ -1,0 +1,50 @@
+﻿@inject IJSRuntime js
+@inject MinimalApi server
+@inject NavigationManager navigator
+
+@page "/projects"
+@layout ProjectLayout
+
+
+<div class="container-fluid p-5" style="z-index:200;">
+    <div id="cloud-js"></div>
+    <div class="text-center">
+        <h3>Admin Dashboard</h3>
+        <p>Welcome to the Admin Panel!</p>
+    </div>
+    <div class="row row-cols-auto row-cols-md-1 row-cols-lg-2 g-3 d-flex justify-content-start mx-auto" style="max-width:1000px">
+
+        @if (Project.Any())
+        {
+            @foreach (var skill in Project.Where(s => s.project != null))
+            {
+                <div class="col px-2">
+                    <ProjectCard Skill="skill"
+                                 
+                                 ImageUrl="skill"
+                                 />
+                </div>
+            }
+
+        }
+    </div>
+</div>
+<DevOpsTerminal/>
+
+@code {
+
+    private List<TechsModel> Project = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Project = await server.FetchTechsAsync();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("loadClouds");
+        }
+    }
+   
+}
