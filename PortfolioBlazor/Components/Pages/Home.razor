@@ -1,4 +1,4 @@
-﻿@page "/s"
+﻿@page "/"
 @inject IJSRuntime jsruntime
 @inject NavigationManager navigator
 @inject MinimalApi server
@@ -23,37 +23,48 @@ terminal desktop fixa större size
 
 info för knappar i home page.
 email.-->
-<div class="container-fluid pt-5 text-white text-center">
+<div class="container-fluid pt-5 text-white text-center" style="z-index:500;">
     <div id="particles-js"></div>
-    <img src="/Images/Devopsbackground.png" class="infinity-image" />
+   @*  <img src="/Images/Devopsbackground.png" class="infinity-image" /> *@
     <div class="d-flex flex-column align-items-center">
             <img src="/Images/Dersim2.jpg" class="rounded-circle animate__animated animate__fadeInLeft m-5" alt="Dersim Abbas Profile" style="max-width:250px;" />
             
             <!--links for github and linkedin-->
-            <div class=" d-flex justify-content-center gap-4" style="z-index:500;">
+            <div class="d-flex justify-content-center gap-4" style="z-index:500;">
                 <a class="link-info fs-2" href="https://www.linkedin.com/in/dersimabbas/" target="_blank">
                     <i class="bi bi-linkedin link-primary"></i>
                 </a>
                 <a class="link-info fs-2" href="https://www.github.com/dersimabbas" target="_blank">
                     <i class="bi bi-github link-light"></i>
                 </a>
+
+            <a class="link-info fs-2" href="mailto:dersim.abbas99@gmail.com" target="_blank">
+                    <i class="bi bi-envelope-at link-light"></i>
+                </a>
+                
             </div>
 
-            <p class="display-6 fw-bold ">Hi! I’m Dersim Abbas - Junior DevOps Engineer</p>
+            <p class="display-6  text-light ">Hi! I’m Dersim Abbas - Junior DevOps Engineer</p>
 
             <!-- Typewriter Tagline -->
             <p class="typewriters-text text-break fs-4" id="typewriter">Empowering Continuous Delivery, Automation, and Cloud Scalability with Modern DevOps Practices.</p>
 
-            <p class="mb-4 fs-5">From CI/CD pipelines to Infrastructure as Code, I help bridge the gap between Development and Operations.</p>
-            <p class="fs-5">Use the terminal at the bottom for interacting and fun experience! Alternatives: buttons.</p>
-            <div class="p-2"style="z-index:50;">
-                <button class="btn btn-success btn-lg" @onclick="ProjectBtn">View Projects</button>
-                <button class="btn btn-outline-success btn-lg" type="button" @onclick="SkillsBtn">Explore Skills</button>
+            <p class="mb-4 fs-4 text-light">From CI/CD pipelines to Infrastructure as Code<br /> I help bridge the gap between Development and Operations.</p>
+            <p class="card-text text-light fs-4 firacode">
+               I thrive on solving complex problems and automating workflows building - <br /> scalable cloud environments and robust CI/CD pipelines.
+            </p>
+            <p class="card-text text-light fs-5">
+                When I'm not immersed in DevOps, I enjoy playing the piano and exploring creative tech projects.<br />
+            For more Information use the built in <strong class="text-success">Terminal</strong> or the buttons below.
+            </p>
+        
+           
+            <div class="p-2 d-flex justify-content-start gap-2"style="z-index:50;">
+               <NavigateButtons/>
             </div>
     </div>
 
 </div>
-
    <DevOpsTerminal />
 
 @code {
@@ -71,15 +82,8 @@ email.-->
     {
         Skills = await server.FetchTechsAsync();
     }
-
-    private void SkillsBtn()
-    {
-        navigator.NavigateTo("/portfolio");
-    }
-    private void ProjectBtn()
-    {
-        navigator.NavigateTo("/testing");
-    }
-    
-
 }
+
+  
+
+

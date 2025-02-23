@@ -23,12 +23,9 @@
     background-color: #00ff7f;
 }
 
-.progress-bar {
-    height: 25px;
-    font-size: 14px;
-
-}
-
+/*.progress-bar {
+    transition: width 1.5s ease-out;
+}*/
 .spinner-icon {
     max-width: 100px;
     animation: spin 1s linear infinite;

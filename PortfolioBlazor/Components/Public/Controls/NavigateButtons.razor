@@ -1,0 +1,32 @@
+﻿@inject NavigationManager navigator
+@{
+    // Get the current relative path in lowercase (without query strings)
+    var currentRoute = navigator.ToBaseRelativePath(navigator.Uri).ToLower();
+}
+
+@if (currentRoute != "projects")
+{
+    <button class="btn btn-outline-primary btn-lg" @onclick="ProjectBtn">Projects</button>
+}
+@if (currentRoute != "skills")
+{
+    <button class="btn btn-outline-success btn-lg" @onclick="SkillsBtn">Skills</button>
+}
+@if (currentRoute != "portfolio")
+{
+    <button class="btn btn-outline-info btn-lg" @onclick="AboutBtn">About</button>
+}
+@code {
+    private void SkillsBtn()
+    {
+        navigator.NavigateTo("/skills");
+    }
+    private void ProjectBtn()
+    {
+        navigator.NavigateTo("/projects");
+    }
+    private void AboutBtn()
+    {
+        navigator.NavigateTo("/portfolio");
+    }
+}

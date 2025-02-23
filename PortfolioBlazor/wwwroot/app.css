@@ -106,7 +106,7 @@ h1:focus {
 }
 
 .bg-python {
-    background: linear-gradient(180deg, rgba(255, 223, 0, 0.8) 50%, rgba(48, 105, 152, 0.8) 50%);
+    background-color: rgba(0, 84, 135, 0.8); /* SQL Blue */
 }
 
 .bg-sql {

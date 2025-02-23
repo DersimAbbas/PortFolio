@@ -1,7 +1,8 @@
 ﻿@page "/portfolio"
 @inject TerminalServices terminalService
+@inject IJSRuntime js
 
-
+<img src="/Images/Devopsbackground.png" class="infinity-image" />
 <div class="container-fluid p-5">
     <h2 class="text-center text-success">My DevOps Journey Pipeline</h2>
     <div class="flex-column">
@@ -19,10 +20,19 @@
             }
         </div>
 
+        @if (showProgressBar)
+        {
+            
+            <div class="d-flex justify-content-center">
+                <div class="progress" style="height: 24px; width:50%;">
+                    <div id="myBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;"
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                
+                    </div>
+                </div>
 
-        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="@Progress" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: @Progress%"></div>
-        </div>
+            </div>
+        }
         <div class="d-flex justify-content-center mt-5">
             <button class="btn btn-success" @onclick="StartPipeline" style="z-index:150;">Start Pipeline</button>
         </div>
@@ -36,9 +46,15 @@
 
     </div>
 </div>
+<div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-start gap-3" style="z-index:500;">
+        <NavigateButtons/>
 
+    </div>
+</div>
 <DevOpsTerminal />
 @code {
+    private bool showProgressBar;
     private string CurrentJobStatus { get; set; } = "Waiting to start pipeline...";
     private bool IsRunning { get; set; } = false;
     private List<PipelineStage> Stages = new List<PipelineStage>
@@ -55,26 +71,46 @@
 
     private async Task StartPipeline()
     {
+        IsActive = false;
         terminalService.AddLog("[INFO] Starting DevOps pipeline...");
         IsRunning = true;
+        showProgressBar = true;
+        // Total duration for each stage animation (e.g., 1500ms)
+        int stageDuration = 1500;
 
         for (int i = 0; i < Stages.Count; i++)
         {
             Stages[i].IsActive = true;
+            // Calculate target progress for this stage (accumulative)
             Progress = ((i + 1) / (double)Stages.Count) * 100;
-            CurrentJobStatus = $"Running job: {Stages[i].Title}...";
-            terminalService.AddLog($"[INFO] Running job: {CurrentJobStatus}...");
-            await Task.Delay(1500); // Simulate job execution
 
-            terminalService.AddLog($"[INFO] Completed: {Stages[i].Title}.");
-            StateHasChanged();
-            terminalService.AddLog($"[INFO] {CurrentJobStatus}");
+            // Animate the progress bar from its current value to targetProgress smoothly
+            await js.InvokeVoidAsync("animateProgress", Progress, stageDuration);
+
+            // Wait for the animation duration to simulate job execution
+            await Task.Delay(stageDuration);
+
+            terminalService.AddLog($"[INFO] Completed stage: {Stages[i].Title}");
+            StateHasChanged(); // Update UI for stage cards etc.
         }
+
         CurrentJobStatus = "Pipeline execution completed successfully!";
         terminalService.AddLog("[INFO] Build successful! All stages completed.");
         IsRunning = false;
+        await Task.Delay(300);
         StateHasChanged();
+        showProgressBar = false;
+
+        await js.InvokeVoidAsync("resetProgressBar");
+        
     }
+    private void ResetProgress()
+    {
+        Progress = 0;
+        Stages.Clear();
+        
+    }
+
 
 
     private class PipelineStage

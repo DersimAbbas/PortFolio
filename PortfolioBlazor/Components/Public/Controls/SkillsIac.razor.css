@@ -1,2 +1,34 @@
-﻿body {
+﻿.code-block {
+  background-color: #1e1e1e;   /* VS Code Dark background */
+  color: #d4d4d4;             /* Base text color */
+  font-family: Consolas, "Courier New", monospace;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 1rem;
+}
+
+/* Keyword: resource, provider, etc. */
+.tf-keyword {
+  color: #c586c0; /* Pinkish-purple */
+}
+
+/* Strings: "skills", "tech_skill", etc. */
+.tf-string {
+  color: #ce9178; /* Reddish-orange for strings */
+}
+
+/* Properties: name, experience, skill_level, etc. */
+.tf-property {
+  color: #9cdcfe; /* Light blue */
+}
+
+/* Numbers: numeric values, skill levels */
+.tf-number {
+  color: #b5cea8; /* Greenish numeric color */
+}
+
+/* Comments (if you add # comments) */
+.tf-comment {
+  color: #6a9955; /* Green comment color */
 }

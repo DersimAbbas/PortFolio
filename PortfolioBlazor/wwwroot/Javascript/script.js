@@ -60,3 +60,34 @@ window.showDemoModal = (modalId) => {
     var modalInstance = new bootstrap.Modal(modalEl, { backdrop: true });
     modalInstance.show();
 };
+
+
+function animateProgress(target, duration) {
+    var elem = document.getElementById("myBar");
+    if (!elem) return;
+    // Get the current width (parse percentage value)
+    var start = parseFloat(elem.style.width) || 0;
+    var diff = target - start;
+    var startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var elapsed = timestamp - startTime;
+        var factor = elapsed / duration;
+        if (factor > 1) factor = 1;
+        var newWidth = start + diff * factor;
+        elem.style.width = newWidth + "%";
+        elem.setAttribute("aria-valuenow", newWidth);
+        if (factor < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+function resetProgressBar() {
+    var elem = document.getElementById("myBar");
+    if (elem) {
+        elem.setAttribute("aria-valuenow", 0);
+    }
+}
