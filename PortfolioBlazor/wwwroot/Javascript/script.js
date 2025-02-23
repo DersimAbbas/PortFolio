@@ -9,8 +9,8 @@ function showModal(modalId) {
     modalInstance.show();
 }
 
-window.initializeLineChart = (canvasId, chartData, chartOptions) => {
     // Get the canvas element using the provided ID
+window.initializeLineChart = (canvasId, chartData, chartOptions) => {
     var ctx = document.getElementById(canvasId).getContext('2d');
     // Create a new Chart.js chart (make sure Chart.js is loaded)
     new Chart(ctx, {
@@ -50,3 +50,13 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }, 250);
 });
+
+window.showDemoModal = (modalId) => {
+    var modalEl = document.getElementById(modalId);
+    if (!modalEl) {
+        console.error("Modal element not found: " + modalId);
+        return;
+    }
+    var modalInstance = new bootstrap.Modal(modalEl, { backdrop: true });
+    modalInstance.show();
+};

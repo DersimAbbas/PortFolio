@@ -6,6 +6,7 @@
 @layout ProjectLayout
 
 
+<DemoModal @ref="demoModal"/>
 <div class="container-fluid p-5" style="z-index:200;">
     <div id="cloud-js"></div>
     <div class="text-center">
@@ -20,7 +21,7 @@
             {
                 <div class="col px-2">
                     <ProjectCard Skill="skill"
-                                 
+                                 OnDemoClicked="HandleDemoClicked"     
                                  ImageUrl="skill"
                                  />
                 </div>
@@ -34,16 +35,24 @@
 @code {
 
     private List<TechsModel> Project = new();
+    private DemoModal demoModal = default!;
 
     protected override async Task OnInitializedAsync()
     {
         Project = await server.FetchTechsAsync();
     }
+    private async Task HandleDemoClicked(TechsModel skill)
+    {
+        // Show the demo modal with the selected project's data
+        await demoModal.ShowDemoModalAsync(skill);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await js.InvokeVoidAsync("loadClouds");
+            // await js.InvokeVoidAsync("showModal", "projectdemo");
         }
     }
    
