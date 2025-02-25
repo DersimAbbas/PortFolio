@@ -35,3 +35,21 @@
 .pushterminal {
     padding-bottom:250px!important;
 }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none!important;
+   
+
+}
+
+    .carousel-control-next-icon:after {
+        content: '>';
+        color: rgba(121, 118, 118, 0.75);
+        font-size:55px;
+    }
+
+    .carousel-control-prev-icon:after {
+        content: '<';
+        color: rgba(47, 44, 44, 0.75);
+        font-size: 55px;
+    }

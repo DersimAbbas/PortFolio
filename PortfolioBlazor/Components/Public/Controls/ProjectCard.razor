@@ -30,8 +30,9 @@
                 </div>
             }
         </div>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center gap-5 mt-1">
             <button class="btn btn-outline-primary" @onclick="()=> OnDemoClicked.InvokeAsync(Skill)" style="max-height:35px;">Demo</button>
+            <a href="@Skill.githubUrl" type="button" role="button" class="btn btn-outline-light" target="_blank"><Icon Name="IconName.Github"></Icon></a>
         </div>
         
        
@@ -107,7 +108,7 @@
         oldSkill.DemoUrl = Skill.DemoUrl;
     }
 
-  
+
 
 
     private void ToggleEdit()
@@ -119,7 +120,7 @@
         updateProject.InvokeAsync(Skill);
         IsEdit = false;
     }
-    
+
 
     public void OnCancel()
     {
@@ -129,5 +130,6 @@
         Skill.project = oldSkill.project;
         Skill.githubUrl = oldSkill.githubUrl;
         Skill.Description = oldSkill.Description;
+        Skill.DemoUrl = oldSkill.DemoUrl;
     }
 }
