@@ -1,129 +1,45 @@
-﻿@page "/portfolio"
-@inject TerminalServices terminalService
-@inject IJSRuntime js
+﻿@page "/about"
+@inject HttpClient Http
+    <img src="/Images/Devopsbackground.png" class="infinity-image" />
+<div class="container-container-fluid p-5">
+    <h2 class="text-center">About Me</h2>
+    <p class="text-center">Some background information about my journey...</p>
 
-<img src="/Images/Devopsbackground.png" class="infinity-image" />
-<div class="container-fluid p-5">
-    <h2 class="text-center text-success">My DevOps Journey Pipeline</h2>
-    <div class="flex-column">
-        <div class="pt-5 d-flex flex-wrap justify-content-center align-items-center">
-            @foreach (var stage in Stages)
-            {
-                <div class="stage-card mx-3 text-center @(stage.IsActive ? "active-stage" : "")">
-                    <h5>@stage.Title</h5>
-                    <p>@stage.Description</p>
-                </div>
-                @if (stage != Stages.Last())
-                {
-                    <div class="stage-connector"></div>
-                }
-            }
-        </div>
+    <!-- Pipeline component is wrapped in the parent's layout -->
+    <div class="my-5" style="z-index:500;">
+        <PipeLine @ref="pipelineComponent" PipelineStages="@Stages" />
+    </div>
 
-        @if (showProgressBar)
-        {
-            
-            <div class="d-flex justify-content-center">
-                <div class="progress" style="height: 24px; width:50%;">
-                    <div id="myBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;"
-                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                
-                    </div>
-                </div>
-
-            </div>
-        }
-        <div class="d-flex justify-content-center mt-5">
-            <button class="btn btn-success" @onclick="StartPipeline" style="z-index:150;">Start Pipeline</button>
-        </div>
-        <div class="progress-label text-center pt-3 d-flex align-items-center justify-content-center">
-            <h5 class="m-0">@CurrentJobStatus</h5> <!-- Dynamic label -->
-            @if (IsRunning)
-            {
-                <img src="/Images/devopsIcon.svg" alt="Running" class="spinner-icon ms-2" />
-            }
+    <div class="d-flex justify-content-center">
+        <div class="mx-auto" style="z-index:500;">
+            <button class="btn btn-success" @onclick="HandlePipeline" disabled="@isRunning">Start Pipeline</button>
         </div>
 
     </div>
+        
+    <DevOpsTerminal/>
 </div>
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center mt-5 me-auto">
     <div class="d-flex justify-content-start gap-3" style="z-index:500;">
-        <NavigateButtons/>
+        <NavigateButtons />
 
     </div>
 </div>
-<DevOpsTerminal />
 @code {
-    private bool showProgressBar;
-    private string CurrentJobStatus { get; set; } = "Waiting to start pipeline...";
-    private bool IsRunning { get; set; } = false;
-    private List<PipelineStage> Stages = new List<PipelineStage>
+    private PipeLine pipelineComponent;
+    private List<PipeLine.PipeLineStage> Stages = new();
+    private bool isRunning;
+    protected override async Task OnInitializedAsync()
     {
-        new PipelineStage("🚀 Getting Started", "Explored Git, CI/CD, and cloud basics."),
-        new PipelineStage("🛠️ IaC", "Deployed infrastructure with Terraform."),
-        new PipelineStage("🐳 Containers", "Dockerized apps for dev and testing."),
-        new PipelineStage("🔁 CI/CD", "Automated pipelines with GitHub Actions."),
-        new PipelineStage("☁️ Cloud", "Deployed web apps on Azure."),
-        new PipelineStage("🎯 Portfolio", "Built this portfolio with Blazor.")
-    };
-
-    private double Progress = 0;
-
-    private async Task StartPipeline()
+        // Load pipeline stages from your API.
+        Stages = await Http.GetFromJsonAsync<List<PipeLine.PipeLineStage>>("https://localhost:7192/pipelinestages");
+    }
+    private async Task HandlePipeline()
     {
-        IsActive = false;
-        terminalService.AddLog("[INFO] Starting DevOps pipeline...");
-        IsRunning = true;
-        showProgressBar = true;
-        // Total duration for each stage animation (e.g., 1500ms)
-        int stageDuration = 1500;
-
-        for (int i = 0; i < Stages.Count; i++)
-        {
-            Stages[i].IsActive = true;
-            // Calculate target progress for this stage (accumulative)
-            Progress = ((i + 1) / (double)Stages.Count) * 100;
-
-            // Animate the progress bar from its current value to targetProgress smoothly
-            await js.InvokeVoidAsync("animateProgress", Progress, stageDuration);
-
-            // Wait for the animation duration to simulate job execution
-            await Task.Delay(stageDuration);
-
-            terminalService.AddLog($"[INFO] Completed stage: {Stages[i].Title}");
-            StateHasChanged(); // Update UI for stage cards etc.
-        }
-
-        CurrentJobStatus = "Pipeline execution completed successfully!";
-        terminalService.AddLog("[INFO] Build successful! All stages completed.");
-        IsRunning = false;
-        await Task.Delay(300);
-        StateHasChanged();
-        showProgressBar = false;
-
-        await js.InvokeVoidAsync("resetProgressBar");
+        isRunning = true;
+        await pipelineComponent.StartPipeline();
+        isRunning = false;
+    }
+      
         
-    }
-    private void ResetProgress()
-    {
-        Progress = 0;
-        Stages.Clear();
-        
-    }
-
-
-
-    private class PipelineStage
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public bool IsActive { get; set; }
-
-        public PipelineStage(string title, string description)
-        {
-            Title = title;
-            Description = description;
-            IsActive = false;
-        }
-    }
 }

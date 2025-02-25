@@ -6,16 +6,21 @@
 
 @if (currentRoute != "projects")
 {
-    <button class="btn btn-outline-primary btn-lg" @onclick="ProjectBtn">Projects</button>
+    <button class="btn btn-outline-danger btn-lg" @onclick="ProjectBtn">Projects</button>
 }
 @if (currentRoute != "skills")
 {
-    <button class="btn btn-outline-success btn-lg" @onclick="SkillsBtn">Skills</button>
+    <button class="btn btn-outline-info btn-lg" @onclick="SkillsBtn">Skills</button>
 }
-@if (currentRoute != "portfolio")
+@if (currentRoute != "")
+{
+    <button class="btn btn-outline-success btn-lg" @onclick="HomeBtn">Home</button>
+}
+@if (currentRoute != "about")
 {
     <button class="btn btn-outline-info btn-lg" @onclick="AboutBtn">About</button>
 }
+
 @code {
     private void SkillsBtn()
     {
@@ -27,6 +32,10 @@
     }
     private void AboutBtn()
     {
-        navigator.NavigateTo("/portfolio");
+        navigator.NavigateTo("/about");
+    }
+    private void HomeBtn()
+    {
+        navigator.NavigateTo("/");
     }
 }

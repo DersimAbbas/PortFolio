@@ -3,21 +3,26 @@
 @inject MinimalApi server
 @inject IJSRuntime js
 @layout ProjectLayout
+@rendermode InteractiveServer
 
 <div id="cloud-js"></div>
-<ChartModal @ref="chartModal" />
 
-<div class="container-fluid p-5">
+<ChartModal @ref="chartModal"/>
+ 
+
+<div class="container-fluid p-5" style="z-index:500;">
     <div class="text-center">
-        <h3>Admin Dashboard</h3>
-        <p>Welcome to the Admin Panel!</p>
+        <h3>Skill Dashboard</h3>
+        <p>Welcome to the skill Panel!</p>
     </div>
     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-8 g-2 d-flex justify-content-start mx-auto" style="max-width:1000px;">
 
         @foreach (var skill in skills.Where(s => s.project == null && s.SkillLevel > 1))
         {
             <div class="col pb-2">
-                <SkillCard Skill="skill"/>
+                <SkillCard Skill="skill"
+                    OnSkillClicked="() => DisplaySkillModal(skill)"
+                        />
             </div>
         }
     </div>
@@ -58,7 +63,7 @@
     protected override async Task OnInitializedAsync()
     {
         skills = await server.FetchTechsAsync();
-
+        await js.InvokeVoidAsync("loadClouds");
     }
     private void ToggleIaCView()
     {
@@ -67,12 +72,16 @@
 
     private async Task DisplaySkillModal(TechsModel skill)
     {
+        selectedSkill = skill;
         await chartModal.ShowSkillModalAsync(skill);
+      
     }
 
     private void CloseModal()
     {
         selectedSkill = null;
+       
+        
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -80,7 +89,7 @@
         if (firstRender && selectedSkill != null)
         {
             await js.InvokeVoidAsync("showModal", "skillprogress");
-            await js.InvokeVoidAsync("loadClouds");
+           
             
         }
     }

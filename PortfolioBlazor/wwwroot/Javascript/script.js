@@ -1,14 +1,21 @@
 ﻿// script.js
-function showModal(modalId) {
+window.showModal = (modalId) => {
+    var myModal = new bootstrap.Modal(document.getElementById(modalId));
+    myModal.show();
+};
+window.hideModal = (modalId) => {
     var modalEl = document.getElementById(modalId);
-    if (!modalEl) {
-        console.error("Modal element not found: " + modalId);
-        return;
+    var modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+        modal.hide();
     }
-    var modalInstance = new bootstrap.Modal(modalEl, { backdrop: true });
-    modalInstance.show();
-}
-
+};
+window.updateModalTitle = (newTitle) => {
+  const titleEl = document.querySelector("#skillprogress .modal-title");
+  if(titleEl) {
+    titleEl.textContent = newTitle;
+  }
+};
     // Get the canvas element using the provided ID
 window.initializeLineChart = (canvasId, chartData, chartOptions) => {
     var ctx = document.getElementById(canvasId).getContext('2d');
@@ -51,15 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 250);
 });
 
-window.showDemoModal = (modalId) => {
-    var modalEl = document.getElementById(modalId);
-    if (!modalEl) {
-        console.error("Modal element not found: " + modalId);
-        return;
-    }
-    var modalInstance = new bootstrap.Modal(modalEl, { backdrop: true });
-    modalInstance.show();
-};
 
 
 function animateProgress(target, duration) {

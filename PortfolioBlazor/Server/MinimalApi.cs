@@ -39,6 +39,30 @@ namespace PortfolioBlazor.Server
             }
         }
 
+        public async Task<List<TechsModel>> FetchProjectsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("https://localhost:7192/api/projects");
+                var json = await response.Content.ReadAsStringAsync();
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Raw JSON Response: {json}");
+                Console.ResetColor();
+
+                var project = System.Text.Json.JsonSerializer.Deserialize<List<TechsModel>>(json);
+                return project ?? new List<TechsModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error fetching techs: {ex.Message}");
+                Console.ResetColor();
+                return new List<TechsModel>();
+            }
+        }
+
+
 
         public async Task<bool> AddTechAsync(TechsModel newTech)
         {
@@ -99,6 +123,7 @@ namespace PortfolioBlazor.Server
                 return false;
             }
         }
+
     }
 }
 

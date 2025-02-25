@@ -1,14 +1,14 @@
 ﻿@using PortfolioBlazor.Models
 @inject IJSRuntime JS
 
-<div class="modal fade" id="skillprogress" tabindex="-1" aria-hidden="true" aria-labelledby="skillprogressLabel">
+<div class="modal fade" id="skillprogress" tabindex="-1" aria-hidden="true" aria-labelledby="skillprogressLabel" @key="_selectedSkill?.Id">
     <div class="modal-dialog">
         <div class="modal-content text-white">
-            <div class="modal-header">
-                <h5 class="modal-title bg-success text-center">
-                    @_selectedSkill?.Technologies - Progress Over Time
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-dark fw-bold text-center">
+                    Total Progress For Skill @_selectedSkill?.Technologies;
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="CloseModal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="() => OnCloseModal.InvokeAsync(null)"></button>
             </div>
             <div class="modal-body" style="max-width:800px; min-width:320px;">
                 <LineChart @ref="lineChartComponent" ChartData="_chartData" ChartOptions="_chartOptions" />
@@ -16,49 +16,67 @@
         </div>
     </div>
 </div>
+    
 
 @code {
-    
     //boiler plate - setup to use blazor bootsraps chart and some configuration for displaying it inside a modal.
     private TechsModel? _selectedSkill;
     private ChartData _chartData = new ChartData();
     private LineChartOptions _chartOptions = new LineChartOptions();
     private LineChart lineChartComponent = default!;
+    [Parameter] public EventCallback OnCloseModal { get; set; } 
+
 
     public async Task ShowSkillModalAsync(TechsModel skill)
     {
+        // Hide modal if it's already open
+        await JS.InvokeVoidAsync("hideModal", "skillprogress");
+        await Task.Delay(100);
+
         _selectedSkill = skill;
         BuildChartData();
 
-       
+        // Update the modal title via JS interop
+        var newTitle = $"{_selectedSkill.Technologies} - Total Progress";
+        await JS.InvokeVoidAsync("updateModalTitle", newTitle);
+
         await Task.Delay(100);
 
         if (lineChartComponent != null)
         {
             await lineChartComponent.InitializeAsync(_chartData, _chartOptions, new string[0]);
         }
-      
         await JS.InvokeVoidAsync("showModal", "skillprogress");
     }
 
- 
+
     private void BuildChartData()
     {
         if (_selectedSkill is null) return;
 
         var labels = new List<string>();
         var skillValues = new List<double?>();
-       
+
         int experienceMonths = int.Parse(new string(_selectedSkill.TechExperience.Where(char.IsDigit).ToArray()));
 
         for (int i = 1; i <= experienceMonths; i++)
         {
             labels.Add($"{i} Month{(i > 1 ? "s" : "")}");
-            
-            skillValues.Add(_selectedSkill.SkillLevel * Math.Pow(1.05, i));
+            double level;
+            if (experienceMonths == 1)
+            {
+                // With only 1 month of experience, use the current level.
+                level = _selectedSkill.SkillLevel;
+            }
+            else
+            {
+                // Linear interpolation: month 1 is level 1, and final month is _selectedSkill.SkillLevel.
+                level = 1 + ((_selectedSkill.SkillLevel - 1) * (i - 1) / (double)(experienceMonths - 1));
+            }
+            skillValues.Add(level);
         }
 
-       
+
         var c = ColorUtility.CategoricalTwelveColors[6].ToColor();
 
         var dataset = new LineChartDataset
@@ -90,8 +108,14 @@
             };
     }
 
-    private void CloseModal()
+    public void CloseModal()
     {
         _selectedSkill = null;
+        _chartData = new ChartData { Labels = new List<string>(), Datasets = new List<IChartDataset>() };
+        _chartOptions = new LineChartOptions();
+        
+        
     }
+
+
 }

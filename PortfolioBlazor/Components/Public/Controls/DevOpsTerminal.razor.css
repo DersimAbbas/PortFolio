@@ -5,7 +5,7 @@
     font-family: 'Fira Code', monospace;
     overflow: auto;
     background-color: #1e1e1e;
-   
+    max-height:30vh;
 }
 
 /* Terminal Header (like VSCode) */

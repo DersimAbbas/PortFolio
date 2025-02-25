@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime js
 @inject MinimalApi server
 @inject NavigationManager navigator
-
+@inject HttpClient http
 @page "/projects"
 @layout ProjectLayout
 
@@ -44,7 +44,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Project = await server.FetchTechsAsync();
+        Project = await server.FetchProjectsAsync();
     }
     private async Task HandleDemoClicked(TechsModel skill)
     {
