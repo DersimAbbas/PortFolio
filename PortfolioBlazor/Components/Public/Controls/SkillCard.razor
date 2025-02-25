@@ -46,7 +46,7 @@
     [Parameter] public EventCallback<string> OnDelete { get; set; }
     [Parameter] public bool IsAuthorized { get; set; }
     [Parameter] public EventCallback<TechsModel> OnSkillClicked { get; set; }
-        
+
 
     private bool IsEdit = false;
     private TechsModel EditSkill = new();
@@ -60,7 +60,7 @@
         EditSkill.SkillLevel = Skill.SkillLevel;
         EditSkill.TechExperience = Skill.TechExperience;
         EditSkill.image = Skill.image;
-
+        EditSkill.DemoUrl = Skill.DemoUrl;
     }
    
     private void ToggleEdit()

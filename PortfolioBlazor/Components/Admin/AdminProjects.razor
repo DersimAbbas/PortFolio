@@ -51,7 +51,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        skills = await server.FetchTechsAsync();
+        skills = await server.FetchProjectsAsync();
     }
     private async Task UpdateSkill(TechsModel skill)
     {

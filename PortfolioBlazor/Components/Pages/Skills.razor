@@ -59,11 +59,13 @@
     private LineChart lineChart = default!;
     private ChartModal chartModal = default!;
     private bool showIaC = false;
+    private bool cloudsLoaded = false;
 
     protected override async Task OnInitializedAsync()
     {
         skills = await server.FetchTechsAsync();
-        await js.InvokeVoidAsync("loadClouds");
+
+
     }
     private void ToggleIaCView()
     {
@@ -74,24 +76,23 @@
     {
         selectedSkill = skill;
         await chartModal.ShowSkillModalAsync(skill);
-      
+
     }
 
     private void CloseModal()
     {
         selectedSkill = null;
-       
-        
-    }
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && selectedSkill != null)
-        {
-            await js.InvokeVoidAsync("showModal", "skillprogress");
-           
-            
-        }
+
+
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !cloudsLoaded)
+        {
+            await js.InvokeVoidAsync("loadClouds");
+            cloudsLoaded = true;
+        }
+    }
+   
 }

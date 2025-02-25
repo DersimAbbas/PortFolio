@@ -22,7 +22,8 @@
                     <ProjectCard Skill="skill"
                                  OnDemoClicked="HandleDemoClicked"     
                                  ImageUrl="skill"
-                                 />
+                                 
+                                 isAuthorized="true"/>
                 </div>
             }
 
@@ -57,7 +58,7 @@
         if (firstRender)
         {
             await js.InvokeVoidAsync("loadClouds");
-            // await js.InvokeVoidAsync("showModal", "projectdemo");
+            
         }
     }
    

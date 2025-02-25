@@ -32,6 +32,9 @@ namespace PortfolioBlazor.Models
         [JsonPropertyName("image")]
         public string? image { get; set; }
 
+        [JsonPropertyName("DemoUrl")]
+        public string? DemoUrl {  get; set; }
+
         public List<string> TechnologiesList => Technologies.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                                        .Select(t => t.Trim())
                                                        .ToList();

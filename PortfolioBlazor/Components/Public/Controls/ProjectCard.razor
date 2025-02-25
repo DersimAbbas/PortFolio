@@ -53,6 +53,10 @@
                             <label class="form-label">Github link</label>
                             <InputText @bind-Value="Skill.githubUrl" class="form-control" />
 
+                            <label class="form-label">Demo link</label>
+                            <InputText @bind-Value="Skill.DemoUrl" class="form-control" />
+
+                            <label class="form-label">Image url</label>
                             <InputText @bind-Value="Skill.image" class="form-control"/>
 
                             <button type="submit"class="btn btn-success" @onclick="UpdatedProject">Update</button>
@@ -100,6 +104,7 @@
         oldSkill.project = Skill.project;
         oldSkill.githubUrl = Skill.githubUrl;
         oldSkill.Description = Skill.Description;
+        oldSkill.DemoUrl = Skill.DemoUrl;
     }
 
   

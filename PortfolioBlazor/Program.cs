@@ -57,7 +57,7 @@ namespace PortfolioBlazor
             builder.Services.AddScoped<MinimalApi>();
             
             builder.Services.AddBlazorBootstrap();
-
+            
             var app = builder.Build();
 
             app.UseHttpsRedirection();

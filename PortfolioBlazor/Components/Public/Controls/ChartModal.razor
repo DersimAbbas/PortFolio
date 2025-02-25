@@ -29,8 +29,7 @@
 
     public async Task ShowSkillModalAsync(TechsModel skill)
     {
-        // Hide modal if it's already open
-        await JS.InvokeVoidAsync("hideModal", "skillprogress");
+        
         await Task.Delay(100);
 
         _selectedSkill = skill;
