@@ -1,14 +1,16 @@
 ﻿
+<!--SkillCard Component For Client and admin view.-->
+
 <div class="card skill-card border border-secondary shadow-sm @(GetCardBackgroundClass(Skill.Technologies)) text-light rounded" style="z-index:500;"
      @onclick="()=>OnSkillClicked.InvokeAsync(Skill)">
 
-    <div class="card-header d-flex justify-content-between">
-        <h5>@Skill.Technologies</h5>
+    <div class="card-header d-flex justify-content-between text-dark">
+        <h5 class="fw-bold">@Skill.Technologies</h5>
         <img src="/Images/@(Skill.image != null ? Skill.image :"favicon.png")" style="max-width:50px; max-height:30px" />
     </div>
     <div class="card-body">
-        <h5 class="card-title">Experience: @Skill.TechExperience</h5>
-        <p class="card-text">level: @Skill.SkillLevel</p>
+        <h5 class="card-title text-dark fw-semibold fs-4">@Skill.Level</h5>
+        <p class="card-text text-dark fw-semibold fs-6">@Skill.TechExperience Experience</p>
     </div>
 
     <div class="card-footer border-0">
@@ -20,7 +22,9 @@
                     <div>
                         <InputText @bind-Value="Skill.Technologies" class="form-control" placeholder="Tech Name" />
                         <InputText @bind-Value="Skill.TechExperience" class="form-control"/>
-                        <InputNumber @bind-Value="Skill.SkillLevel" class="form-control" placeholder="Level" />
+                        <InputNumber @bind-Value="Skill.SkillLevel" class="form-control" placeholder="skillLevel" />
+                        <InputText @bind-Value="Skill.Level" class="form-control" placeholder="Level" />
+                        <InputText @bind-Value="Skill.image" class="form-control" placeholder="image" />
                     </div>
                     <div>
                         <button type="submit" class="btn btn-success" @onclick="UpdatedSkill">Update</button>
@@ -78,8 +82,6 @@
         Skill.image = EditSkill.image;
     }
 
-
-
     private string GetCardBackgroundClass(string techName)
     {
         return techName.ToLower() switch
@@ -93,9 +95,10 @@
             "sql" => "bg-sql",
             "python" => "bg-python",
             "firebase" => "bg-firebase",
-            "rest api" => "bg-restapi",
+            "asp.net api" => "bg-restapi",
             "kubernetes" => "bg-kubernetes",
             "azure" => "bg-azure",
+            "node.js" => "bg-nodejs",
             _ => "bg-default"
         };
     }

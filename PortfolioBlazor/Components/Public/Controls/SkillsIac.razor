@@ -2,28 +2,30 @@
 
 <!-- Provider Block -->
 
-<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-8 g-2 d-flex justify-content-start mx-auto" style="max-width:1000px;">
+<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-8 d-flex justify-content-center g-2"style="max-width:1500px;">
     <!-- Resource Cards -->
-@foreach (var skill in Skills.Where(s => s.project == null))
-{
+    @foreach (var skill in Skills.Where(s => s.project == null))
+    {
     
-    <div class="col">
-    <div class="card bg-dark text-light rounded mb-1" style="min-width:335px;">
-        <div class="card-body ms-2">
-            <pre>
-                <code>
-<span class="tf-keyword">resource</span> <span class="tf-string">"tech_skill_@(skill.Technologies.ToLower())"</span> {
-  <span class="tf-property">name</span>        = <span class="tf-string">"@skill.Technologies"</span>
-  <span class="tf-property">experience</span>  = <span class="tf-string">"@skill.TechExperience"</span>
-  <span class="tf-property">skill_level</span> = <span class="tf-number">@skill.SkillLevel</span>
-}
-                </code>
-            </pre>
+        <div class="col">
+            <div class="card bg-dark text-light rounded mb-1" style="max-width:320px;">
+                <div class="card-body">
+                <pre>
+                    <code>
+    <span class="tf-keyword">resource</span> <span class="tf-string">"tech_skill_@(skill.Technologies.ToLower())"</span> {
+        <span class="tf-property">name</span>        = <span class="tf-string">"@skill.Technologies"</span>
+        <span class="tf-property">experience</span>  = <span class="tf-string">"@skill.TechExperience"</span>
+        <span class="tf-property">skill_level</span> = <span class="tf-string">"@skill.Level"</span>
+    }
+                    </code>
+                </pre>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
-}
+    }
 </div>
+
+
 
 
 

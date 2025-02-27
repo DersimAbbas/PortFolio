@@ -1,34 +1,48 @@
 ﻿@page "/about"
 @inject HttpClient Http
-    <img src="/Images/Devopsbackground.png" class="infinity-image" />
-<div class="container-container-fluid p-5">
-    <h2 class="text-center">About Me</h2>
-    <p class="text-center">Some background information about my journey...</p>
+<PageTitle>About</PageTitle>
 
-    <!-- Pipeline component is wrapped in the parent's layout -->
-    <div class="my-5" style="z-index:500;">
-        <PipeLine @ref="pipelineComponent" PipelineStages="@Stages" />
-    </div>
+<title>About</title>
 
-    <div class="d-flex justify-content-center">
+<img src="/Images/Devopsbackground.png" class="infinity-image" alt="devops-background" />
+
+<div class="container-fluid p-5">
+    <h1 class="text-center">About Me</h1>
+    <p class="text-center fs-4">Some background information about my journey...</p>
+
+ 
+    @if (Show)
+    {
+        <!-- Pipeline component is wrapped in the parent's layout -->
+            <div class="my-5" style="z-index:500;">
+                <PipeLine @ref="pipelineComponent" PipelineStages="@Stages" />
+            </div>
+    }  
+        
+    
+        
+    <div class="d-flex justify-content-center mt-5">
         <div class="mx-auto" style="z-index:500;">
-            <button class="btn btn-success" @onclick="HandlePipeline" disabled="@isRunning">Start Pipeline</button>
+            <button class="btn btn-success" @onclick="HandlePipeline"
+            disabled="@isRunning">Start Pipeline</button>
         </div>
 
     </div>
         
-</div>
-<div class="d-flex justify-content-center mt-5 me-auto">
-    <div class="d-flex justify-content-start gap-3" style="z-index:500;">
-        <NavigateButtons />
 
-    </div>
 </div>
-    <DevOpsTerminal/>
+    <div class="d-flex justify-content-center mt-5 me-auto">
+        <div class="d-flex justify-content-start gap-3" style="z-index:500;">
+            <NavigateButtons />
+        </div>
+    </div>
+<DevOpsTerminal/>
+
 @code {
-    private PipeLine pipelineComponent;
+    private PipeLine pipelineComponent = null!;
     private List<PipeLine.PipeLineStage> Stages = new();
     private bool isRunning;
+    private bool Show;
     protected override async Task OnInitializedAsync()
     {
         // Load pipeline stages from your API.
@@ -36,9 +50,13 @@
     }
     private async Task HandlePipeline()
     {
+        Show = false;
+        Show = true;
         isRunning = true;
+        await Task.Delay(50);
         await pipelineComponent.StartPipeline();
         isRunning = false;
+
     }
       
         

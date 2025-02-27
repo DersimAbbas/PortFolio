@@ -46,7 +46,12 @@
 .bg-terraform {
     background-color: rgba(93, 61, 178, 0.8);  
 }
-
+.bg-default{
+    background-color: rgba(21, 20, 20, 0.8)
+}
+.bg-nodejs {
+    background-color: rgba(9, 180, 70, 0.80);
+}
 .skill-card {
     transition: transform 0.3s, box-shadow 0.3s;
 }

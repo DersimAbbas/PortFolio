@@ -6,19 +6,19 @@
 
 @if (currentRoute != "projects")
 {
-    <button class="btn btn-outline-danger btn-lg" @onclick="ProjectBtn">Projects</button>
+    <a class="btn btn-outline-info btn-lg" href="/projects" @onclick="ProjectBtn">Projects</a>
 }
 @if (currentRoute != "skills")
 {
-    <button class="btn btn-outline-info btn-lg" @onclick="SkillsBtn">Skills</button>
+    <a class="btn btn-outline-info btn-lg" href="/skills" @onclick="SkillsBtn">Skills</a>
 }
 @if (currentRoute != "")
 {
-    <button class="btn btn-outline-success btn-lg" @onclick="HomeBtn">Home</button>
+    <a class="btn btn-outline-info btn-lg" href="/" @onclick="HomeBtn">Home</a>
 }
 @if (currentRoute != "about")
 {
-    <button class="btn btn-outline-info btn-lg" @onclick="AboutBtn">About</button>
+    <a class="btn btn-outline-info btn-lg" href="/about" @onclick="AboutBtn">About</a>
 }
 
 @code {

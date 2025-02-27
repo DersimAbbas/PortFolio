@@ -39,7 +39,7 @@
 }
 
 .form-control::placeholder {
-    color: #5cff5c;
+    color: #00ff7f;
     opacity: 0.6;
 }
 
@@ -47,7 +47,7 @@
     width: 100%;
     background: transparent;
     border: none;
-    color: #00ff00;
+    color: #00ff7f;
     font-size: 1.2rem;
 }
 

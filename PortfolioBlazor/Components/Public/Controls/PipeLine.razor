@@ -33,9 +33,7 @@
             }
         </div>
     }
-
   
-
     @if (ShowProgressBar)
     {
         <div class="d-flex justify-content-center mt-3">
@@ -45,28 +43,26 @@
                 </div>
             </div>
         </div>
-    }
+          
 
-    <div class="progress-label text-center pt-3">
-        <h5>@CurrentJobStatus</h5>
-    </div>
+    }
+    else
+    {
+        <div class="progress-label text-center pt-3">
+            <h5>@CurrentJobStatus</h5>
+        </div>
+        
+    }    
 </div>
 
-@code {
-    // Title can be overridden by the parent.
+@code {   
     
-
-    // List of pipeline stages passed from the parent.
     [Parameter] public List<PipeLineStage> PipelineStages { get; set; } = new();
 
-    // Internal UI state.
     private bool IsRunning = false;
     private bool ShowProgressBar = false;
     private string CurrentJobStatus = "Waiting to start pipeline...";
 
-    /// <summary>
-    /// Starts the pipeline animation and resets the UI state afterward.
-    /// </summary>
     public async Task StartPipeline()
     {
         ResetPipelineState();
@@ -74,7 +70,7 @@
         TerminalService.AddLog("[INFO] Starting pipeline...");
         IsRunning = true;
         ShowProgressBar = true;
-        int stageDuration = 1500; // Duration per stage in ms
+        int stageDuration = 1500; 
         int totalStages = PipelineStages.Count;
 
         for (int i = 0; i < totalStages; i++)
@@ -82,7 +78,7 @@
             PipelineStages[i].IsActive = true;
             double progress = ((i + 1) / (double)totalStages) * 100;
 
-            // Animate progress using the provided JS function.
+           
             await JS.InvokeVoidAsync("animateProgress", progress, stageDuration);
             await Task.Delay(stageDuration);
 
@@ -94,7 +90,7 @@
         TerminalService.AddLog("[INFO] Build successful! All stages completed.");
         await Task.Delay(300);
 
-        // Reset progress bar and UI state for the next run.
+       
         ShowProgressBar = false;
         await JS.InvokeVoidAsync("resetProgressBar");
         IsRunning = false;

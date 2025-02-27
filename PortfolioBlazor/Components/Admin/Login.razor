@@ -60,11 +60,11 @@
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
-                Console.WriteLine(result);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Token from loginpage: {result.Token}");
                 // Store JWT token in localStorage
                 await js.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
-
+                Console.ResetColor();
                 // Redirect to the admin panel after login
                 navigator.NavigateTo("/admin");
             }

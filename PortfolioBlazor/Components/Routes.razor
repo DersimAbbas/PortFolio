@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using PortfolioBlazor.Components.Layout
-<CascadingAuthenticationState>
+
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+              
+            </RouteView>
             <FocusOnNavigate Selector="h1" RouteData="@routeData" />
         </Found>
         <NotFound>
@@ -11,6 +13,5 @@
                 <p>Sorry, there's nothing at this address.</p>
             </LayoutView>
         </NotFound>
-        
     </Router>
-</CascadingAuthenticationState>
+

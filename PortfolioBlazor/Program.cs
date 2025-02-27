@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using PortfolioBlazor.Components;
 using PortfolioBlazor.Components.Public.Controls;
 using PortfolioBlazor.Server;
@@ -35,14 +37,19 @@ namespace PortfolioBlazor
                 });
 
             //identity to authorize admin page.
-
+            builder.Services.AddAuthentication();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<
                 AuthenticationStateProvider,
                 ServerAuthenticationStateProvider
             >();
+            //builder.Services.AddScoped<AuthenticationStateProvider>();
+
+            //builder.Services.AddScoped<ServerAuthenticationStateProvider>();
+
             builder.Services.AddScoped<ChartModal>();
+
             builder.Services.AddSingleton<TerminalServices>();
 
             builder.Services.Configure<JsonSerializerOptions>(options =>
@@ -61,7 +68,7 @@ namespace PortfolioBlazor
             var app = builder.Build();
 
             app.UseHttpsRedirection();
-
+            
             app.UseStaticFiles();
             app.UseAntiforgery();
 

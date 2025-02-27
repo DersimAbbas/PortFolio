@@ -5,28 +5,31 @@
 @rendermode InteractiveServer
 @layout AdminLayout
 @inject IJSRuntime jsruntime
-@attribute [Authorize]
 
-<div id="cloud-js"></div>
 
-@if (isAuthenticated)
+@if (IsAuthorized == null)
 {
-    <div class="container-fluid p-5">
-        <div class="text-center">
-            <h3>Admin Dashboard</h3>
-            <p>Welcome to the Admin Panel!</p>
-        </div>
-   
-    </div>
-
+    <p>Loading..</p>
 }
 else
 {
-    Navigation.NavigateTo("/login");
+   
+        <div id="cloud-js"></div>
+
+
+
+        <div class="container-fluid p-5">
+            <div class="text-center">
+                <h3>Admin Dashboard</h3>
+                <p>Welcome to the Admin Panel!</p>
+            </div>
+
+        </div>
+        <button class="btn btn-primary"@onclick="LogOutBtn">Logout</button>
+   
+
+    
 }
-
-
-
 
 
 @code {
@@ -34,18 +37,20 @@ else
     private TechsModel? selectedSkill;
     private string? editingSkillId = null;
     private bool DisplayForm = false;
-    private bool isAuthenticated;
+    private bool? IsAuthorized;
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-        Console.WriteLine(token);
-        if (string.IsNullOrEmpty(token))
-        {
-            Navigation.NavigateTo("/login");
-            return;
-        }
-        isAuthenticated = true;
+
+        // var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+        // Console.ForegroundColor = ConsoleColor.Red;
+        // Console.WriteLine(token);
+        // if (string.IsNullOrEmpty(token))
+        // {
+        //     Navigation.NavigateTo("/login");
+        //     return;
+        // }
+        // Console.ResetColor();
 
     }
 
@@ -139,9 +144,22 @@ else
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
         if (firstRender)
         {
             await jsruntime.InvokeVoidAsync("loadClouds");
+            var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            IsAuthorized = !string.IsNullOrEmpty(token);
+            if (IsAuthorized.HasValue && IsAuthorized.Value == false)
+            {
+                Navigation.NavigateTo("/login");
+            }
+            StateHasChanged();
         }
+    }
+    private async Task LogOutBtn()
+    {
+        await jsruntime.InvokeVoidAsync("localStorage.clear");
+        Navigation.NavigateTo("/login");
     }
 }
