@@ -14,21 +14,30 @@
 else
 {
    
-        <div id="cloud-js"></div>
+     
 
+        <div class="container-fluid p-5" style="z-index:3000; position:relative">
 
+            <div class="text-center text-dark fw-bold">
+                <h1>Admin Page</h1>
+                <p class="fs-5">Welcome to the Admin Panel! now do whatever you want king.</p>
+            </div>
 
-        <div class="container-fluid p-5">
-            <div class="text-center">
-                <h3>Admin Dashboard</h3>
-                <p>Welcome to the Admin Panel!</p>
+            <div class="d-flex justify-content-center mt-3 gap-3">
+                <button class="btn btn-primary" @onclick="SkillsBtn">Manage Skills</button>   
+                <button class="btn btn-success" @onclick="ProjectsBtn">Manage Projects</button>
+            </div>
+
+            <div class="d-flex justify-content-center m-5">
+                <button class="btn btn-primary"@onclick="LogOutBtn">Logout</button>
+
             </div>
 
         </div>
-        <button class="btn btn-primary"@onclick="LogOutBtn">Logout</button>
    
 
     
+        <div id="cloud-js" style="z-index:0"></div>
 }
 
 
@@ -39,109 +48,16 @@ else
     private bool DisplayForm = false;
     private bool? IsAuthorized;
 
-    protected override async Task OnInitializedAsync()
+
+    private void ProjectsBtn()
     {
-
-        // var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-        // Console.ForegroundColor = ConsoleColor.Red;
-        // Console.WriteLine(token);
-        // if (string.IsNullOrEmpty(token))
-        // {
-        //     Navigation.NavigateTo("/login");
-        //     return;
-        // }
-        // Console.ResetColor();
-
+        Navigation.NavigateTo("admin/projects");
+    }
+    private void SkillsBtn()
+    {
+        Navigation.NavigateTo("admin/skills");
     }
 
-    private async Task LoadSkills()
-    {
-        skills = await http.GetFromJsonAsync<List<TechsModel>>("https://localhost:7192/api/techs");
-    }
-
-    private async Task UpdateSkill(TechsModel skill)
-    {
-        var response = await http.PutAsJsonAsync($"https://localhost:7192/api/tech{skill.Id}", skill);
-        if (response.IsSuccessStatusCode)
-        {
-            await LoadSkills();
-            CancelEditing();  // Close the edit form
-        }
-    }
-    private async Task AddSkillAsync()
-    {
-        var newSkill = new TechsModel
-            {
-
-                Technologies = "New Technology", // Default name
-                TechExperience = "0 years", // Default experience
-                SkillLevel = 1, // Default skill level
-                image = "favicon.png" // Default image
-            };
-
-        // Add the new skill to the list
-        editingSkillId = newSkill.Id; // Set the editing ID to the new skill's ID
-        var send = await http.PostAsJsonAsync($"https://localhost:7192/api/newtech", newSkill);
-        await LoadSkills();
-    }
-    private async Task DisplayEditForm(string skillId)
-    {
-        if (editingSkillId == skillId) return; // Prevent re-render if already editing
-
-        editingSkillId = ""; // Temporary reset
-
-        editingSkillId = skillId;
-        selectedSkill = skills.FirstOrDefault(s => s.Id == skillId);
-
-        await InvokeAsync(StateHasChanged); // Force UI refresh
-    }
-
-    private async Task CancelEditing()
-    {
-        Console.WriteLine($"Before Cancel: editingSkillId = {editingSkillId}");
-
-        editingSkillId = ""; // Temporary reset to force UI update
-        await Task.Delay(10); // Small delay to allow UI to register change
-        editingSkillId = null; // Now properly clear the edit state
-        selectedSkill = null;
-
-        await InvokeAsync(StateHasChanged); // Force UI refresh
-
-        Console.WriteLine($"After Cancel: editingSkillId = {editingSkillId}");
-    }
-    private async Task DeleteSkill(string skillId)
-    {
-        var response = await http.DeleteAsync($"https://localhost:7192/api/deletetech{skillId}");
-        if (response.IsSuccessStatusCode)
-        {
-            skills = skills.Where(s => s.Id != skillId).ToList(); // Remove from UI
-            StateHasChanged(); // Refresh UI
-        }
-        else
-        {
-            Console.WriteLine("Failed to delete skill.");
-        }
-    }
-    private string GetCardBackgroundClass(string techName)
-    {
-        return techName.ToLower() switch
-        {
-            "blazor" => "bg-blazor",
-            "react" => "bg-react",
-            "c#" => "bg-csharp",
-            "docker" => "bg-docker",
-            "terraform" => "bg-terraform",
-            "mongo" => "bg-mongodb",
-            "sql" => "bg-sql",
-            "azure" => "bg-azure",
-            "python" => "bg-python",
-            "firebase" => "bg-firebase",
-            "rest api" => "bg-restapi",
-            "kubernetes" => "bg-kubernetes",
-
-            _ => "bg-default" // Fallback background
-        };
-    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 

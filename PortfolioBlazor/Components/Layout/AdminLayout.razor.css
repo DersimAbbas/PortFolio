@@ -17,6 +17,7 @@
 .admin-content {
     padding: 20px; /* Ensure inner content is spaced properly */
     color: white; /* Ensure contrast */
+    
 }
 
 #blazor-error-ui {

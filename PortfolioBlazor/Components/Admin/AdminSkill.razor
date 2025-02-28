@@ -1,4 +1,4 @@
-﻿@page "/admins"
+﻿@page "/admin/skills"
 @inject HttpClient http
 @inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Authorization
@@ -8,11 +8,14 @@
 @rendermode InteractiveServer
 @layout AdminLayout
 @inject IJSRuntime jsruntime
+
 <div id="cloud-js"></div>
-<div class="container-fluid p-5">
+
+<div class="container-fluid p-5" style="z-index:500;">
     <div class="text-center">
-        <h3>Admin Dashboard</h3>
-        <p>Welcome to the Admin Panel!</p>
+        <h3>Skills Dashboard</h3>
+        <p class="fs-4 fw-fw-semibold">Manage Skills Here</p>
+    <button class="btn btn-success m-2" @onclick="BackBtn">Go back</button>
     </div>
     <div class="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-8 g-2 d-flex justify-content-start mx-auto" style="max-width:1000px;">
 
@@ -31,8 +34,9 @@
 <div class="d-flex justify-content-center">
 
     <button class="btn btn-success border-bg-success" @onclick="AddSkillAsync" style="z-index:55;">Add skill</button>
-    <button class="btn btn-Primary border-bg-Alert" @onclick="AddProjectAsync" style="z-index:55;">Add Project</button>
+ 
 </div>
+
 
 
 @code {
@@ -40,11 +44,16 @@
     private TechsModel? selectedSkill;
     private List<TechsModel>? Projects = new();
     private string? editingSkillId = null;
-
+    private bool? IsAuthorized;
     protected override async Task OnInitializedAsync()
     {
         await LoadSkills();
     }
+    private void BackBtn()
+    {
+        Navigation.NavigateTo("/admin");
+    }
+
 
     private async Task LoadSkills()
     {
@@ -76,7 +85,7 @@
         var send = await http.PostAsJsonAsync($"https://localhost:7192/api/newtech", newSkill);
         await LoadSkills();
     }
- 
+
 
     private async Task CancelEditing()
     {
@@ -126,23 +135,13 @@
         if (firstRender)
         {
             await jsruntime.InvokeVoidAsync("loadClouds");
-        }
-    }
-
-    private async Task AddProjectAsync()
-    {
-        var newProject = new TechsModel
+            var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            IsAuthorized = !string.IsNullOrEmpty(token);
+            if (IsAuthorized.HasValue && !IsAuthorized.Value)
             {
-                project = "new default",
-                Technologies = "New Technology", // Default name
-                githubUrl = "example.wwwokwo.com",
-                image = "favicon.png" // Default image
-            };
-
-        // Add the new skill to the list
-        editingSkillId = newProject.Id; // Set the editing ID to the new skill's ID
-        var send = await http.PostAsJsonAsync($"https://localhost:7192/api/newtech", newProject);
-        await LoadSkills();
-    
+                Navigation.NavigateTo("/login");
+                StateHasChanged();
+            }
+        }
     }
 }

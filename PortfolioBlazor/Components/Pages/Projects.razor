@@ -4,8 +4,10 @@
 @inject HttpClient http
 @page "/projects"
 @layout ProjectLayout
+
 <PageTitle>Projects</PageTitle>
 <title>Projects</title>
+
 <div id="cloud-js"></div>
 <DemoModal @ref="demoModal"/>
 <div class="container-fluid p-5" style="z-index:200;">
@@ -13,7 +15,7 @@
         <h2>My Projects since my DevOps journey began</h2>
         <p class="fs-4">From 2024/08/20 - @DateTime.Now.ToString("yyyy/MM/dd")</p>
     </div>
-    <div class="row row-cols-auto row-cols-md-1 row-cols-lg-2 g-3 d-flex justify-content-start mx-auto" style="max-width:1000px">
+    <div class="row row-cols-auto row-cols-md-1 row-cols-lg-3 g-3 gap-3 d-flex justify-content-center mx-auto" style="max-width:1500px;">
 
         @if (Project.Any())
         {

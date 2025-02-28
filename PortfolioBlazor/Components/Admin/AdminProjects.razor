@@ -1,4 +1,4 @@
-﻿@page "/aprojects"
+﻿@page "/admin/projects"
 @using PortfolioBlazor.Components.Public.Controls
 @using Microsoft.AspNetCore.Authorization
 @using PortfolioBlazor.Components.Layout
@@ -14,9 +14,10 @@
 <div id="cloud-js"></div>
 
 <div class="container-fluid p-5">
-    <div class="text-center">
-        <h3>Admin Dashboard</h3>
-        <p>Welcome to the Admin Panel!</p>
+    <div class="text-center fw-semibold">
+        <h2>Projects Dashboard</h2>
+        <p class="fs-4">Manage your projects</p>
+        <button class="btn btn-success m-2" @onclick="BackBtn">Go back</button>
     </div>
     <div class="row row-cols-auto row-cols-md-1 row-cols-lg-2 g-3 d-flex justify-content-start mx-auto" style="max-width:1000px">
 
@@ -38,7 +39,7 @@
 </div>
 
 <div class="d-flex justify-content-center">
-    <button class="btn btn-Primary border-bg-Alert" @onclick="AddProjectAsync" style="z-index:55;">Add Project</button>
+    <button class="btn btn-primary" @onclick="AddProjectAsync">Add Project</button>
 </div>
 
 
@@ -47,11 +48,12 @@
     private TechsModel? selectedSkill;
     private List<TechsModel>? Projects = new();
     private string? editingSkillId = null;
-
+    private bool? IsAuthorized;
 
     protected override async Task OnInitializedAsync()
     {
         skills = await server.FetchProjectsAsync();
+     
     }
     private async Task UpdateSkill(TechsModel skill)
     {
@@ -63,6 +65,10 @@
 
         }
         await InvokeAsync(StateHasChanged);// Close the edit form
+    }
+    private void BackBtn()
+    {
+        Navigation.NavigateTo("/admin");
     }
     private async Task LoadProjects()
     {
@@ -96,6 +102,13 @@
         if (firstRender)
         {
             await jsruntime.InvokeVoidAsync("loadClouds");
+            var token = await jsruntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            IsAuthorized = !string.IsNullOrEmpty(token);
+            if (IsAuthorized.HasValue && !IsAuthorized.Value)
+            {
+                Navigation.NavigateTo("/login");
+                StateHasChanged();
+            }
         }
     }
 
