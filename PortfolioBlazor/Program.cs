@@ -1,13 +1,10 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using PortfolioBlazor.Components;
 using PortfolioBlazor.Components.Public.Controls;
 using PortfolioBlazor.Server;
 using PortfolioBlazor.Services;
+using System.Text.Json;
 
 namespace PortfolioBlazor
 {
@@ -19,7 +16,15 @@ namespace PortfolioBlazor
 
             // Add services to the container.
             builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-            builder
+            var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
+            builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+            builder.Services.AddScoped(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var baseAddress = config["ApiBaseUrl"]; // Read from appsettings.json
+                return new HttpClient { BaseAddress = new Uri(baseAddress) };
+            });
+            /*builder
                 .Services.AddHttpClient(
                     "ApiClient",
                     client =>
@@ -34,7 +39,7 @@ namespace PortfolioBlazor
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     return new HttpClientHandler();
-                });
+                });*/
 
             //identity to authorize admin page.
             builder.Services.AddAuthentication();
@@ -50,7 +55,7 @@ namespace PortfolioBlazor
 
             builder.Services.AddScoped<ChartModal>();
 
-            builder.Services.AddSingleton<TerminalServices>();
+            builder.Services.AddScoped<TerminalServices>();
 
             builder.Services.Configure<JsonSerializerOptions>(options =>
             {
@@ -62,13 +67,13 @@ namespace PortfolioBlazor
                 .AddCircuitOptions(options => options.DetailedErrors = true);
 
             builder.Services.AddScoped<MinimalApi>();
-            
+
             builder.Services.AddBlazorBootstrap();
-            
+
             var app = builder.Build();
 
             app.UseHttpsRedirection();
-            
+
             app.UseStaticFiles();
             app.UseAntiforgery();
 

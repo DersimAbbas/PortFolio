@@ -57,12 +57,12 @@
 
     private async Task LoadSkills()
     {
-        skills = await http.GetFromJsonAsync<List<TechsModel>>("https://localhost:7192/api/techs");
+        skills = await http.GetFromJsonAsync<List<TechsModel>>($"/api/techs");
     }
 
     private async Task UpdateSkill(TechsModel skill)
     {
-        var response = await http.PutAsJsonAsync($"https://localhost:7192/api/updatetech{skill.Id}", skill);
+        var response = await http.PutAsJsonAsync($"/api/updatetech{skill.Id}", skill);
         if (response.IsSuccessStatusCode)
         {
             await LoadSkills();

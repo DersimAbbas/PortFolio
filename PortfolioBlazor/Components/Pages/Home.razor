@@ -4,28 +4,9 @@
 @inject MinimalApi server
 <PageTitle>Home</PageTitle>
 <title>Home</title>
-<!-- Main Content -->
-<!--TO DO LIST COLLAPSED-->
-<!--TO DO LIST LATER
-TO DO LIST IMPROVE AFTER FIXING PROJECTS COMPONENT.
 
-ändra font
-robotic font
-ändra devops animation
-
-padding bottom i bild
-
-contrast i ls skills
-
-pipeline
-loading bar
-
-terminal desktop fixa större size
-
-info för knappar i home page.
-email.-->
+<div id="particles-js"></div>
 <div class="container-fluid pt-5 text-white text-center" style="z-index:500;">
-    <div id="particles-js"></div>
  
     <div class="d-flex flex-column align-items-center">
             <img src="/Images/Dersim2_converted.webp" crossorigin="anonymous" class="rounded-circle animate__animated animate__fadeInLeft m-5" alt="Dersim Abbas Profile" style="max-width:250px;" />
@@ -47,7 +28,7 @@ email.-->
             <p class="display-6  text-light ">Hi! I’m Dersim Abbas - Junior DevOps Engineer</p>
 
             <!-- Typewriter Tagline -->
-            <p class="typewriters-text text-break fs-4" id="typewriter">Empowering Continuous Delivery, Automation, and Cloud Scalability with Modern DevOps Practices.</p>
+            <p class="typewriters-text text-break fs-4" id="typewriter"></p>
 
             <p class="mb-4 fs-4 text-light">From CI/CD pipelines to Infrastructure as Code<br /> I help bridge the gap between Development and Operations.</p>
             <p class="card-text text-light fs-4 firacode">
@@ -71,18 +52,26 @@ email.-->
 
     private bool Display = false;
     private List<TechsModel>? Skills = new();
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await jsruntime.InvokeVoidAsync("loadParticles");
-        }
-    }
+
     protected override async Task OnInitializedAsync()
     {
         Skills = await server.FetchTechsAsync();
     }
-}
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsruntime.InvokeVoidAsync(
+                "startTypeWriterEffect",
+                "typewriter",
+                "Empowering Continuous Delivery, Automation, and Cloud Scalability with Modern DevOps Practices.",
+                40
+            );
+          await jsruntime.InvokeVoidAsync("loadParticles");
+        }
+    }
+}   
 
   
 

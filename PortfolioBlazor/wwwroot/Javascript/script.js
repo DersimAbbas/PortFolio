@@ -48,16 +48,11 @@ function typeWriterEffect(elementId, text, delay = 50) {
     }
     typeNext();
 }
-document.addEventListener("DOMContentLoaded", function () {
-    // Wait 1 second before starting the effect
+window.startTypeWriterEffect = function (elementId, text, delay) {
     setTimeout(() => {
-        typeWriterEffect(
-            "typewriter",
-            "Empowering Continuous Delivery, Automation, and Cloud Scalability with Modern DevOps Practices.",
-            40 // Increase delay to 150ms between characters
-        );
-    }, 250);
-});
+        typeWriterEffect(elementId, text, delay);
+    }, 250); // Delay before starting the effect
+};
 
 window.showDemoModal = (modalId) => {
     var modalEl = document.getElementById(modalId);

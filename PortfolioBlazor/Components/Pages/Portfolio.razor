@@ -46,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Load pipeline stages from your API.
-        Stages = await Http.GetFromJsonAsync<List<PipeLine.PipeLineStage>>("https://localhost:7192/pipelinestages");
+        Stages = await Http.GetFromJsonAsync<List<PipeLine.PipeLineStage>>($"/pipelinestages");
     }
     private async Task HandlePipeline()
     {

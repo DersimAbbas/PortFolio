@@ -58,7 +58,7 @@
     private async Task UpdateSkill(TechsModel skill)
     {
 
-        var response = await http.PutAsJsonAsync($"https://localhost:7192/api/updatetech{skill.Id}", skill);
+        var response = await http.PutAsJsonAsync($"/api/updatetech{skill.Id}", skill);
         if (response.IsSuccessStatusCode)
         {
 

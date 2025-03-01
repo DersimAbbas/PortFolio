@@ -1,8 +1,6 @@
-﻿using ChartJs.Blazor.Common.Axes.Ticks;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 using PortfolioBlazor.Models;
 using System.Net.Http.Headers;
-using static System.Net.WebRequestMethods;
 
 namespace PortfolioBlazor.Server
 {
@@ -20,7 +18,7 @@ namespace PortfolioBlazor.Server
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://localhost:7192/api/techs");
+                var response = await _httpClient.GetAsync($"/api/techs");
                 var json = await response.Content.ReadAsStringAsync();
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -43,7 +41,7 @@ namespace PortfolioBlazor.Server
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://localhost:7192/api/projects");
+                var response = await _httpClient.GetAsync($"/api/projects");
                 var json = await response.Content.ReadAsStringAsync();
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -74,7 +72,7 @@ namespace PortfolioBlazor.Server
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var response = await _httpClient.PostAsJsonAsync("https://localhost:7192/api/newtech", newTech);
+                var response = await _httpClient.PostAsJsonAsync($"/api/newtech", newTech);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -94,7 +92,7 @@ namespace PortfolioBlazor.Server
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7192/api/updatetech/{id}", updatedTech);
+                var response = await _httpClient.PutAsJsonAsync($"/api/updatetech/{id}", updatedTech);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -114,7 +112,7 @@ namespace PortfolioBlazor.Server
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var response = await _httpClient.DeleteAsync($"https://localhost:7192/api/deletetech{id}");
+                var response = await _httpClient.DeleteAsync($"/api/deletetech{id}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

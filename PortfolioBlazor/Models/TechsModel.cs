@@ -33,10 +33,10 @@ namespace PortfolioBlazor.Models
         public string? image { get; set; }
 
         [JsonPropertyName("demoUrl")]
-        public string? DemoUrl {  get; set; }
+        public string? DemoUrl { get; set; }
 
         [JsonPropertyName("level")]
-        public string Level {  get; set; } 
+        public string Level { get; set; }
         public List<string> TechnologiesList => Technologies.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                                        .Select(t => t.Trim())
                                                        .ToList();
@@ -45,4 +45,3 @@ namespace PortfolioBlazor.Models
                                       .ToList();
     }
 }
-    

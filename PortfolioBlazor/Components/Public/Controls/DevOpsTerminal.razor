@@ -7,6 +7,7 @@
 @inject HttpClient http
 @using System.Threading;
 @using System.Threading.Tasks;
+@using System.Text.RegularExpressions
 
 <div class="container-fluid p-0 fixed-bottom">
 
@@ -44,7 +45,7 @@
     private string command = "";
     private string currentPath = "/";
     private string infoMessage1 = "[INFO] DevOps Terminal Initialized.";
-    private string infoMessage2 = "[INFO] Type commands like: cd projects, ls skills, deploy portfolio.";
+    private string infoMessage2 = "[INFO] Type commands like: cd projects, ls skills, cd about.";
     private string currentPrompt = "";
     private string[] prompts = new[]
     {
@@ -59,9 +60,10 @@
         new string("'ls help'"),
         new string("'cd home'"),
         new string("'cd projects'"),
-        new string("'cls - clearing terminal'"),
+        new string("'cls' -  to clear terminal'"),
         new string("'ls skills'"),
-        new string("'ls info'")
+        new string("'ls info'"),
+        new string("'cd about'")
     };
     private bool isAuthenticating = false;
     private string username = "";
@@ -92,7 +94,7 @@
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {        
-        
+
         if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(command))
         {
 
@@ -100,13 +102,13 @@
             {
                 username = command;
                 terminalService.AddLog($"[INFO] Username entered.");
-               
+
                 enterUsername = false;
                 enterPassword = true;
                 command = "";
                 return;
             }
-
+                
             if (enterPassword)
             {
                 password = command; 
@@ -117,10 +119,10 @@
                 await AuthenticateUser(username, password);
                 return;
             }
-
-
+            var trimCommand = command.Trim();
+            var normalizedCommand = Regex.Replace(trimCommand, @"\s+", " ");
             terminalService.AddLog($"$ {command}");
-            switch (command.ToLower())
+            switch (normalizedCommand.ToLower())
             {
                 case "cd projects":
                     terminalService.AddLog("[INFO] Navigating to /projects...");
@@ -145,9 +147,9 @@
                     break;
 
 
-                case "deploy portfolio":
-                    navigator.NavigateTo("/portfolio");
-                    currentPath = "/portfolio";
+                case "cd about":
+                    navigator.NavigateTo("/about");
+                    currentPath = "/about";
                     terminalService.AddLog("[INFO] Deploying Portfolio...");
                     break;
 
@@ -202,7 +204,7 @@
     private async Task AuthenticateUser(string username, string password)
     {
         var loginDto = new LoginDto { Username = username, Password = password };
-        var response = await http.PostAsJsonAsync("https://localhost:7192/api/auth/login", loginDto);
+        var response = await http.PostAsJsonAsync($"/api/auth/login", loginDto);
 
         if (response.IsSuccessStatusCode)
         {
