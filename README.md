@@ -23,3 +23,12 @@ A full-stack web application showcasing a developer portfolio with a modern DevO
 - **Containerization & Deployment:**
   - Containerized with Docker.
   - Managed with Docker Compose and deployed on Azure as a single App Service resource.
+
+  ---
+## Images are showcased with different devices in Dev tools.
+<p align="center">
+  <img src="https://i.gyazo.com/a73e159c03e1a2c49ce5f90fc70f5766.png" alt="Screenshot Description">
+	<img src="https://i.gyazo.com/eee5fb8fc0a78b3dcccd758c9a24c4a6.png" alt="Screenshot Description">
+  <img src="https://i.gyazo.com/535f5e65580d8f8a75f1509b5ae13a0c.png" alt="Screenshot Description">
+</p>
+
