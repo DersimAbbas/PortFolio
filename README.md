@@ -3,7 +3,7 @@
 A full-stack web application showcasing a developer portfolio with a modern DevOps feel. This project uses a combination of Blazor for the frontend and an ASP.NET API for the backend, with MongoDB as the database. It also includes a secure admin section for CRUD operations via identity management. The entire application is containerized using Docker and deployed as a single App Service resource on Azure through Docker Compose.
 ---
 
-## [Live-Demo](https://dersimabbas-portfolio.azurewebsites.net/)
+## [Live-Demo](www.dersim-portfolio.com)
 
 ---
 
